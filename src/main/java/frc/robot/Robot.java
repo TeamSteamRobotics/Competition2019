@@ -112,6 +112,8 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     driveSubsystem.left.reset();
     driveSubsystem.right.reset();
+    driveSubsystem.ahrs.reset();
+    driveSubsystem.odo.setPose(0, 0, 0);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -127,7 +129,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
-    DriverStation.reportWarning(driveSubsystem.left.getDistance()+"", false);
+    
+    //DriverStation.reportWarning(driveSubsystem.odo.getPose().toString(), false);
+    //visionSubsystem.setNumber("gyro", driveSubsystem.ahrs.getAngle());
     //DriverStation.reportWarning(visionSubsystem.getTVec()[2]+"", false);
   }
 

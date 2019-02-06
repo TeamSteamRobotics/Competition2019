@@ -22,7 +22,7 @@ public class DriveSubsystem extends Subsystem {
     public Side right;
     public double wheelCircumf = 6.0 * 3.141592653;//units = inches
     public double encoderResolution = 4096.0;//4096 units per rotation
-    //public Odometry odo;
+    public Odometry odo;
     public AHRS ahrs;
     public Telemetry telemetry;
 
@@ -33,8 +33,12 @@ public class DriveSubsystem extends Subsystem {
     public DriveSubsystem() {
         left = new Side("left");
         right = new Side("right");
+        left.reset();
+        right.reset();
         ahrs = new AHRS(SPI.Port.kMXP);
-        //odo = new Odometry(this);
+        ahrs.reset();
+        odo = new Odometry(this);
+        //odo.setPose(14, 0, 0);
         telemetry = new Telemetry();
     }
 
@@ -125,6 +129,7 @@ public class DriveSubsystem extends Subsystem {
                 follower.setInverted(true);
                 //quadrature = new Encoder(RobotMap.rightDriveEncA, RobotMap.rightDriveEncB, false);
             }
+            reset();
 
             follower.follow(master);
 
@@ -161,11 +166,11 @@ public class DriveSubsystem extends Subsystem {
         public void update() {
             leftPct = left.master.getMotorOutputPercent();
             //leftAmps = left.master.getOutputCurrent() + left.follower.getOutputCurrent();
-            //leftEnc = left.get();
+            leftEnc = left.get();
 
             rightPct = right.master.getMotorOutputPercent();
             //rightAmps = right.master.getOutputCurrent() + right.follower.getOutputCurrent();
-            //rightEnc = right.get();
+            rightEnc = right.get();
         }
     }
 }

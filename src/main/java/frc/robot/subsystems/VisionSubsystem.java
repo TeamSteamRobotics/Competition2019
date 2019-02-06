@@ -32,4 +32,14 @@ public class VisionSubsystem extends Subsystem {
   public double[] getTVec(){
     return table.getEntry("tvec").getDoubleArray(new double[0]);
   }
+
+  public void setNumber(String key, double value){
+    table.getEntry(key).setDouble(value);
+  }
+
+  public double getYaw(){
+    return table.getEntry("eulerAngles").getDoubleArray(new double[0])[1];
+    
+
+  }
 }
