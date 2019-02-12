@@ -1,8 +1,15 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXPIDSetConfiguration;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import frc.robot.util.*;
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.SPI;
@@ -20,6 +27,7 @@ public class DriveSubsystem extends Subsystem {
 
     public Side left;
     public Side right;
+    //WPI_TalonSRX test = new WPI_TalonSRX(0);
     public double wheelCircumf = 6.0 * 3.141592653;//units = inches
     public double encoderResolution = 4096.0;//4096 units per rotation
     public Odometry odo;
@@ -31,6 +39,9 @@ public class DriveSubsystem extends Subsystem {
     public void initDefaultCommand() { setDefaultCommand(new Drive()); }
 
     public DriveSubsystem() {
+        //test.selectProfileSlot(0, 0);
+        //test.config_kP(0, .125);
+        //test.config_kD(0, 0.0);
         left = new Side("left");
         right = new Side("right");
         left.reset();
@@ -71,7 +82,13 @@ public class DriveSubsystem extends Subsystem {
     public boolean isRamping() { return isRamping; }
 
     public void drive(double xSpeed, double zRotation) {
-        double leftMotorOutput;
+        left.follower.setInches(22 + (4 * xSpeed));
+        //DriverStation.reportError("position: " + left.follower.getSelectedSensorPosition(), false);
+        DriverStation.reportError("length: "+(left.follower.getLength()), false);
+        /*left.master.set(ControlMode.Position, (xSpeed * 8192));
+        right.master.set(ControlMode.Position, (xSpeed * 8192));
+        DriverStation.reportError("error: "+left.master.getClosedLoopError(), false);*/
+        /*double leftMotorOutput;
         double rightMotorOutput;
 
         double maxInput = Math.copySign(Math.max(Math.abs(xSpeed), Math.abs(zRotation)), xSpeed);
@@ -97,13 +114,13 @@ public class DriveSubsystem extends Subsystem {
         }
 
         left.set(leftMotorOutput);
-        right.set(rightMotorOutput);
+        right.set(rightMotorOutput);*/
     }
 
     public class Side {
 
-        final LazySRX master;
-        final LazySPX follower;
+        final TalonSRX master;
+        final LinearActuator follower;
         //private final Encoder quadrature;
         private volatile double setpoint = 0;
         private volatile double lastError = 0;
@@ -119,26 +136,40 @@ public class DriveSubsystem extends Subsystem {
 
         Side(String side) {
             if (side.equals("left")) {
-                master = new LazySRX(RobotMap.leftDrive);
-                follower = new LazySPX(RobotMap.leftDrive);
+                master = new TalonSRX(RobotMap.leftDrive);
+                follower = new LinearActuator(RobotMap.leftFollower);
                 //quadrature = new Encoder(RobotMap.leftDriveEncA, RobotMap.leftDriveEncB, false);
             } else {
-                master = new LazySRX(RobotMap.rightDrive);
-                follower = new LazySPX(RobotMap.rightDrive);
+                master = new TalonSRX(RobotMap.rightDrive);
+                follower = new LinearActuator(RobotMap.rightFollower);
                 master.setInverted(true);
                 follower.setInverted(true);
                 //quadrature = new Encoder(RobotMap.rightDriveEncA, RobotMap.rightDriveEncB, false);
             }
             reset();
 
-            follower.follow(master);
+            follower.configSelectedFeedbackSensor(FeedbackDevice.Analog);
+            follower.configContinuousCurrentLimit(5);
+            follower.configPeakCurrentLimit(5);
+            follower.enableCurrentLimit(true);
+            //follower.setSelectedSensorPosition(2130);
+
+            follower.selectProfileSlot(0, 0);
+            //follower.setSensorPhase(true);
+            follower.config_kP(0, 10);
+            follower.config_kD(0, .5);
+            follower.config_kI(0, 0);
+            
+            follower.config_kF(0, 0.0);
+
+            //follower.follow(master);
 
             //quadrature.setDistancePerPulse(2 * Math.PI / 2048.0); //should make getRate() return rad/s
         }
 
         public void set(double percentOutput) {
             percentOutput = Math.max(-1, Math.min(1, percentOutput));
-            master.set(ControlMode.PercentOutput, percentOutput);
+            master.set(ControlMode.Position, percentOutput * 4096);
         }
 
         public void startPID() { PIDLoop.startPeriodic(0.01); }

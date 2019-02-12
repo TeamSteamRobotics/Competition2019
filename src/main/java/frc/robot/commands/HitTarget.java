@@ -17,6 +17,7 @@ public class HitTarget extends Command {
   public double lastVisionGyro;
   public double lastLeftEncoderDistance;
   public double lastRightEncoderDistance;
+  public boolean hasSeenTarget = false;
 
   public HitTarget() {
     // Use requires() here to declare subsystem dependencies
@@ -28,33 +29,40 @@ public class HitTarget extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    hasSeenTarget = false;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    lastLeftEncoderDistance = Robot.driveSubsystem.left.getDistance();
-    lastRightEncoderDistance = Robot.driveSubsystem.right.getDistance();
+    
     double[] tvec = Robot.visionSubsystem.getTVec();
-    if(tvec[2] != 0.0){
+    if(tvec.length > 0 && tvec[2] != 0.0){
       lastRelativeYaw = Robot.visionSubsystem.getYaw();
       lastVisionGyro = Robot.driveSubsystem.ahrs.getAngle();
-      xError = tvec[0];
-      double targetYaw = xError * 1.3;
+      xError = tvec[0] + 12.5;
+      double zError = tvec[2];
+      double xCorrectionAngle = Math.atan2(xError, zError) * 180.0 / Math.PI;
+      double targetYaw = xError * 1;
+      //%DriverStation.reportWarning("targetYaw: "+targetYaw, false);
       double steerCorrection = (targetYaw - lastRelativeYaw) * -1.0/90.0;
       Robot.driveSubsystem.drive(-0.3, steerCorrection);
-    }else{//odometry-ish stuff, but not really. Definitely should change/rework/delete this.
+      hasSeenTarget = true;
+    }else if(hasSeenTarget){//odometry-ish stuff, but not really. Definitely should change/rework/delete this.
       double gyroChange = lastVisionGyro - Robot.driveSubsystem.ahrs.getAngle();//how much we have turned since the last time we saw the target.
       double relativeYaw = lastRelativeYaw + gyroChange;//combining gyroChange with the last target orientation to get the (supposed) current target orientation
       double dLeft = Robot.driveSubsystem.left.getDistance() - lastLeftEncoderDistance;
       double dRight = Robot.driveSubsystem.right.getDistance() - lastRightEncoderDistance;
       double displacement = (dLeft + dRight) / 2.0;//odometry stuff
-      xError -= displacement * Math.sin(relativeYaw * Math.PI / 180.0);//how much x error changed
+      xError += displacement * Math.sin(relativeYaw * Math.PI / 180.0);//how much x error changed
       double targetYaw = xError * 1.3;
       double steerCorrection = (targetYaw - relativeYaw) * -1.0/90.0;
-      Robot.driveSubsystem.drive(-0.3, steerCorrection);
-      DriverStation.reportError("OH GOD I CANT SEE ANYTHIN!!!!" , false);
+      Robot.driveSubsystem.drive(-0.2, steerCorrection);
+      DriverStation.reportError("xError: "+xError , false);
     }
+    lastLeftEncoderDistance = Robot.driveSubsystem.left.getDistance();
+    lastRightEncoderDistance = Robot.driveSubsystem.right.getDistance();
+    
   }
 
   // Make this return true when this Command no longer needs to run execute()
