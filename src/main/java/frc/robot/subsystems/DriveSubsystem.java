@@ -147,20 +147,7 @@ public class DriveSubsystem extends Subsystem {
                 //quadrature = new Encoder(RobotMap.rightDriveEncA, RobotMap.rightDriveEncB, false);
             }
             reset();
-
-            follower.configSelectedFeedbackSensor(FeedbackDevice.Analog);
-            follower.configContinuousCurrentLimit(5);
-            follower.configPeakCurrentLimit(5);
-            follower.enableCurrentLimit(true);
-            //follower.setSelectedSensorPosition(2130);
-
-            follower.selectProfileSlot(0, 0);
-            //follower.setSensorPhase(true);
-            follower.config_kP(0, 10);
-            follower.config_kD(0, .5);
-            follower.config_kI(0, 0);
-            
-            follower.config_kF(0, 0.0);
+            follower.setSensorPosition(29.43);
 
             //follower.follow(master);
 

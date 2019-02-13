@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.HitTarget;
 
@@ -22,6 +23,7 @@ public class OI {
   // You create one by telling it which joystick it's on and which button
   // number it is.
   public Joystick stick = new Joystick(0);
+  public XboxController armControl = new XboxController(1);
   // Joystick stick = new Joystick(port);
   JoystickButton goToTarget = new JoystickButton(stick, 1);
 

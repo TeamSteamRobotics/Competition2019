@@ -9,6 +9,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -131,7 +133,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
-    
+    m_oi.armControl.setRumble(RumbleType.kLeftRumble, m_oi.armControl.getTriggerAxis(Hand.kLeft));
+    m_oi.armControl.setRumble(RumbleType.kRightRumble, m_oi.armControl.getTriggerAxis(Hand.kRight));
     //DriverStation.reportWarning(driveSubsystem.ahrs.getAngle()+"", false);
     //visionSubsystem.setNumber("gyro", driveSubsystem.ahrs.getAngle());
     //DriverStation.reportWarning(visionSubsystem.getTVec()[2]+"", false);
