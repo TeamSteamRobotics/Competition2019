@@ -8,7 +8,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -21,12 +20,12 @@ import frc.robot.util.LinearActuator;
 public class ArmSubsystem extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
-  double xOffset = 24;//how far behind the arm the linear actuators are.
-  double zOffset = 12;//how far to the side of the arm either linear actuator is.
-  double armAttachmentSeparation = 2;//how far the actuators' attachment points are from the center line of the arm.
-  double armAttachmentHeight = 12;//how high along the arm the actuators are attached
-  double l1 = 36;//length of bottom section of arm
-  double l2 = 36;//length of top section of arm
+  static double xOffset = 21;//how far behind the arm the linear actuators are.
+  static double zOffset = 9.25;//how far to the side of the arm either linear actuator is.
+  static double armAttachmentSeparation = 2.032;//how far the actuators' attachment points are from the center line of the arm.
+  static double armAttachmentHeight = 11;//how high along the arm the actuators are attached
+  static double l1 = 36;//length of bottom section of arm
+  static double l2 = 36;//length of top section of arm
 
   LinearActuator leftActuator = new LinearActuator(RobotMap.leftActuator);
   LinearActuator rightActuator = new LinearActuator(RobotMap.rightActuator);
@@ -34,10 +33,6 @@ public class ArmSubsystem extends Subsystem {
 
   TalonSRX elbow = new TalonSRX(RobotMap.elbow);
   TalonSRX wrist = new TalonSRX(RobotMap.wrist);
-
-  public ArmSubsystem(){
-    
-  }
 
   @Override
   public void initDefaultCommand() {

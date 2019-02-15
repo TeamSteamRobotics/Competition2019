@@ -69,22 +69,12 @@ public class DriveSubsystem extends Subsystem {
         }
     }
 
-    public void startPID() {
-        left.startPID();
-        right.startPID();
-    }
-
-    public void stopPID() {
-        left.stopPID();
-        right.stopPID();
-    }
-
     public boolean isRamping() { return isRamping; }
 
     public void drive(double xSpeed, double zRotation) {
-        left.follower.setInches(22 + (4 * xSpeed));
+        left.follower.set(ControlMode.PercentOutput, xSpeed);
         //DriverStation.reportError("position: " + left.follower.getSelectedSensorPosition(), false);
-        DriverStation.reportError("length: "+(left.follower.getLength()), false);
+        DriverStation.reportError("length: "+left.follower.getLength(), false);
         /*left.master.set(ControlMode.Position, (xSpeed * 8192));
         right.master.set(ControlMode.Position, (xSpeed * 8192));
         DriverStation.reportError("error: "+left.master.getClosedLoopError(), false);*/
@@ -122,48 +112,27 @@ public class DriveSubsystem extends Subsystem {
         final TalonSRX master;
         final LinearActuator follower;
         //private final Encoder quadrature;
-        private volatile double setpoint = 0;
-        private volatile double lastError = 0;
-
-        private Notifier PIDLoop = new Notifier(() -> {
-            //double error = (setpoint - getRate());
-            //double output = Constants.kf * setpoint;
-            //output += Constants.kp * error;
-            //output += Constants.kd * ((error - lastError) / 0.02);
-            //set(output);
-            //lastError = error;
-        });
 
         Side(String side) {
             if (side.equals("left")) {
                 master = new TalonSRX(RobotMap.leftDrive);
                 follower = new LinearActuator(RobotMap.leftFollower);
-                //quadrature = new Encoder(RobotMap.leftDriveEncA, RobotMap.leftDriveEncB, false);
             } else {
                 master = new TalonSRX(RobotMap.rightDrive);
                 follower = new LinearActuator(RobotMap.rightFollower);
                 master.setInverted(true);
                 follower.setInverted(true);
-                //quadrature = new Encoder(RobotMap.rightDriveEncA, RobotMap.rightDriveEncB, false);
             }
             reset();
-            follower.setSensorPosition(29.43);
+            //follower.setSensorPosition(28.25);
 
             //follower.follow(master);
-
-            //quadrature.setDistancePerPulse(2 * Math.PI / 2048.0); //should make getRate() return rad/s
         }
 
         public void set(double percentOutput) {
             percentOutput = Math.max(-1, Math.min(1, percentOutput));
             master.set(ControlMode.Position, percentOutput * 4096);
         }
-
-        public void startPID() { PIDLoop.startPeriodic(0.01); }
-
-        public void stopPID() { PIDLoop.stop(); }
-
-        public void setSpeed(double setpoint) { this.setpoint = setpoint; }
 
         public void reset() { master.setSelectedSensorPosition(0); }
 

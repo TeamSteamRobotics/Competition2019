@@ -26,15 +26,15 @@ public class LinearActuator extends TalonSRX {
     }
     public void setInches(double inches){
         inches = Utils.clamp(minActuatorLength, maxActuatorLength, inches);
-        set(ControlMode.Position, inches/.0135);
+        set(ControlMode.Position, (inches - 17.162)/.0132);
     }
 
     public double getLength(){
-        return getSelectedSensorPosition() * .0135;
+        return getSelectedSensorPosition() * .0132 + 17.162;
     }
 
     public void setSensorPosition(double inches){
-        setSelectedSensorPosition((int)(inches / .0135));
+        setSelectedSensorPosition((int)((inches - 17.162) / .0132));
     }
 
 }

@@ -125,6 +125,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    //driveSubsystem.left.follower.setSensorLength(SmartDashboard.getNumber("actuatorLength", defaultValue))
   }
 
   /**
