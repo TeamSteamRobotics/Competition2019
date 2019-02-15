@@ -3,21 +3,17 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRXPIDSetConfiguration;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import frc.robot.util.*;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.command.Subsystem;
 //import frc.robot.Constants;
 import frc.robot.RobotMap;
 //import frc.robot.util.Odometry;
-import frc.robot.util.LazySRX;
 import frc.robot.commands.Drive;
 
 /**

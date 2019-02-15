@@ -2,16 +2,16 @@ package frc.robot;
 
 public class RobotState {
 
-    public enum State {
-        Idle, Hatch, Ball, Release
+    public enum SuctionState {
+        Idle, Hatch, Ball
     }
 
     private static RobotState INSTANCE = null;
 
-    private State state;
+    private SuctionState state;
 
     private RobotState() {
-        state = State.Idle;
+        state = SuctionState.Idle;
     }
 
     public static RobotState getInstance() {
@@ -21,10 +21,10 @@ public class RobotState {
         return INSTANCE;
     }
 
-    public void setState(State state) {
+    public void setState(SuctionState state) {
         this.state = state;
     }
-    public State getState() {
+    public SuctionState getState() {
         return state;
     }
 }
