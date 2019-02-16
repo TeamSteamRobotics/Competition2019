@@ -6,26 +6,31 @@ import frc.robot.RobotState;
 
 public class MonitorSuctionState extends Command {
 
+    RobotState robotState;
+
     public MonitorSuctionState() {
         requires(Robot.suctionSubsystem);
     }
 
     public void initialize() {
+        robotState = RobotState.getInstance();
     }
 
     public void execute() {
-        RobotState.SuctionState suctionState = RobotState.getInstance().getState();
-        switch (suctionState) {
-            case Idle:
+        switch (robotState.getSuctionState()) {
+            case Release:
                 Robot.suctionSubsystem.divertRelease();
                 Robot.suctionSubsystem.setSuctionPower(0);
                 break;
-            case Ball:
-                Robot.suctionSubsystem.divertBall();
-                Robot.suctionSubsystem.setSuctionPower(1);
-                break;
-            case Hatch:
-                Robot.suctionSubsystem.divertHatch();
+            case Hold:
+                switch (robotState.getMode()){
+                    case Hatch:
+                        Robot.suctionSubsystem.divertHatch();
+                        break;
+                    case Cargo:
+                        Robot.suctionSubsystem.divertBall();
+                        break;
+                }
                 Robot.suctionSubsystem.setSuctionPower(1);
                 break;
         }

@@ -26,7 +26,7 @@ import frc.robot.subsystems.*;
 public class Robot extends TimedRobot {
   public static VisionSubsystem visionSubsystem = new VisionSubsystem();
   public static DriveSubsystem driveSubsystem = new DriveSubsystem();
-  //public static ArmSubsystem armSubsystem = new ArmSubsystem();
+  public static ArmSubsystem armSubsystem = new ArmSubsystem();
   public static SuctionSubsystem suctionSubsystem = new SuctionSubsystem();
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static OI m_oi;
