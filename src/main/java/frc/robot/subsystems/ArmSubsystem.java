@@ -22,6 +22,8 @@ public class ArmSubsystem extends Subsystem {
   // here. Call these from Commands.
   static double xOffset = 21;//how far behind the arm the linear actuators are.
   static double zOffset = 9.25;//how far to the side of the arm either linear actuator is.
+  static double yOffset = 2;//how far below the arm base the linear actuator base is.
+  static double pivotLength = 1.5;//distance between the actuators' y axis and z axis rotation.
   static double armAttachmentSeparation = 2.032;//how far the actuators' attachment points are from the center line of the arm.
   static double armAttachmentHeight = 11;//how high along the arm the actuators are attached
   static double l1 = 36;//length of bottom section of arm
@@ -82,8 +84,8 @@ public class ArmSubsystem extends Subsystem {
     double rightZ = armAttachmentHeight*Math.sin(theta1)*Math.cos(theta2) - armAttachmentSeparation * Math.cos(theta1);
 
     //finding the distance between the attachment points and the base of the corresponding linear actuator.
-    double leftLength = Math.hypot(leftX + xOffset, Math.hypot(leftY, leftZ + zOffset));
-    double rightLength = Math.hypot(rightX + xOffset, Math.hypot(rightY, rightZ - zOffset));
+    double leftLength = Math.hypot(leftY + yOffset, Math.hypot(leftX + xOffset, leftZ + zOffset) - pivotLength);
+    double rightLength = Math.hypot(rightY + yOffset, Math.hypot(rightX + xOffset, rightZ - zOffset) - pivotLength);
 
     setShoulderLengths(leftLength, rightLength);
   }

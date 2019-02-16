@@ -15,9 +15,9 @@ package frc.robot;
  */
 public class RobotMap {
     public static int leftDrive = 1,
-        leftFollower = 2,
+        leftFollower = 1,
         rightDrive = 0,
-        rightFollower = 3,
+        rightFollower = 0,
         leftActuator = 2,
         rightActuator = 3,
         elbow = 4,

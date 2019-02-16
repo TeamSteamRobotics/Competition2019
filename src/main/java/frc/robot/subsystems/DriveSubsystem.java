@@ -3,21 +3,16 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRXPIDSetConfiguration;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import frc.robot.util.*;
 import com.kauailabs.navx.frc.AHRS;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.command.Subsystem;
-//import frc.robot.Constants;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.RobotMap;
-//import frc.robot.util.Odometry;
-import frc.robot.util.LazySRX;
 import frc.robot.commands.Drive;
 
 /**
@@ -27,21 +22,18 @@ public class DriveSubsystem extends Subsystem {
 
     public Side left;
     public Side right;
-    //WPI_TalonSRX test = new WPI_TalonSRX(0);
     public double wheelCircumf = 6.0 * 3.141592653;//units = inches
     public double encoderResolution = 4096.0;//4096 units per rotation
     public Odometry odo;
     public AHRS ahrs;
     public Telemetry telemetry;
+    public DifferentialDrive diffDrive;
 
     private boolean isRamping = false;
 
     public void initDefaultCommand() { setDefaultCommand(new Drive()); }
 
     public DriveSubsystem() {
-        //test.selectProfileSlot(0, 0);
-        //test.config_kP(0, .125);
-        //test.config_kD(0, 0.0);
         left = new Side("left");
         right = new Side("right");
         left.reset();
@@ -51,6 +43,7 @@ public class DriveSubsystem extends Subsystem {
         odo = new Odometry(this);
         //odo.setPose(14, 0, 0);
         telemetry = new Telemetry();
+        diffDrive = new DifferentialDrive(left.master, right.master);
     }
 
     public void startRamping() {
@@ -72,12 +65,7 @@ public class DriveSubsystem extends Subsystem {
     public boolean isRamping() { return isRamping; }
 
     public void drive(double xSpeed, double zRotation) {
-        left.follower.set(ControlMode.PercentOutput, xSpeed);
-        //DriverStation.reportError("position: " + left.follower.getSelectedSensorPosition(), false);
-        DriverStation.reportError("length: "+left.follower.getLength(), false);
-        /*left.master.set(ControlMode.Position, (xSpeed * 8192));
-        right.master.set(ControlMode.Position, (xSpeed * 8192));
-        DriverStation.reportError("error: "+left.master.getClosedLoopError(), false);*/
+        diffDrive.arcadeDrive(xSpeed, zRotation);
         /*double leftMotorOutput;
         double rightMotorOutput;
 
@@ -109,29 +97,28 @@ public class DriveSubsystem extends Subsystem {
 
     public class Side {
 
-        final TalonSRX master;
-        final LinearActuator follower;
-        //private final Encoder quadrature;
+        final WPI_TalonSRX master;
+        final WPI_VictorSPX follower;
 
         Side(String side) {
             if (side.equals("left")) {
-                master = new TalonSRX(RobotMap.leftDrive);
-                follower = new LinearActuator(RobotMap.leftFollower);
+                master = new WPI_TalonSRX(RobotMap.leftDrive);
+                follower = new WPI_VictorSPX(RobotMap.leftFollower);
             } else {
-                master = new TalonSRX(RobotMap.rightDrive);
-                follower = new LinearActuator(RobotMap.rightFollower);
-                master.setInverted(true);
-                follower.setInverted(true);
+                master = new WPI_TalonSRX(RobotMap.rightDrive);
+                follower = new WPI_VictorSPX(RobotMap.rightFollower);
+                //master.setInverted(true);
+                //follower.setInverted(true);
             }
             reset();
-            //follower.setSensorPosition(28.25);
 
-            //follower.follow(master);
+            follower.follow(master);
         }
 
         public void set(double percentOutput) {
             percentOutput = Math.max(-1, Math.min(1, percentOutput));
-            master.set(ControlMode.Position, percentOutput * 4096);
+            master.set(ControlMode.PercentOutput, percentOutput);
+            //follower.set(ControlMode.PercentOutput, percentOutput);
         }
 
         public void reset() { master.setSelectedSensorPosition(0); }

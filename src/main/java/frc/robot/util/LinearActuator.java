@@ -3,8 +3,9 @@ package frc.robot.util;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-public class LinearActuator extends TalonSRX {
+public class LinearActuator extends WPI_TalonSRX {
     public static final double minActuatorLength = 17.43;
     public static final double maxActuatorLength = 26.43;
 
