@@ -36,7 +36,7 @@ public class OI {
 
   public XboxController armController = new XboxController(1);
 
-  POVButton floorButton = new POVButton(armController, -90);
+  POVButton floorButton = new POVButton(armController, 270);
   POVButton loadButton = new POVButton(armController, 90);
   JoystickButton shipButton = new JoystickButton(armController, 0);
   JoystickButton rocket1Button = new JoystickButton(armController, 2);

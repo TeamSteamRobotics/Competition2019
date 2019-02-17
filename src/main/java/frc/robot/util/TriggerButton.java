@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.Robot;
 
 /**
  * Add your docs here.
@@ -27,7 +26,7 @@ public class TriggerButton extends Trigger {
 
   @Override
   public boolean get() {
-    return Robot.m_oi.armController.getTriggerAxis(hand) > .5;
+    return controller.getTriggerAxis(hand) > .5;
   }
 
   public void whenPressed(Command command){

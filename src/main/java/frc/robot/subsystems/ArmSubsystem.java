@@ -10,13 +10,14 @@ package frc.robot.subsystems;
 import java.util.HashMap;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
+import frc.robot.commands.MonitorArmState;
 import frc.robot.util.ArmPreset;
 import frc.robot.util.LinearActuator;
+import frc.robot.util.Utils;
 
 /**
  * Add your docs here.
@@ -31,7 +32,7 @@ public class ArmSubsystem extends Subsystem {
   static double armAttachmentSeparation = 2.032;//how far the actuators' attachment points are from the center line of the arm.
   static double armAttachmentHeight = 11;//how high along the arm the actuators are attached
   static double l1 = 36;//length of bottom section of arm
-  static double l2 = 36;//length of top section of arm
+  static double l2 = 39;//length of top section of arm
 
   LinearActuator leftActuator = new LinearActuator(RobotMap.leftActuator);
   LinearActuator rightActuator = new LinearActuator(RobotMap.rightActuator);
@@ -45,14 +46,14 @@ public class ArmSubsystem extends Subsystem {
   public HashMap<String, ArmPreset> presets = new HashMap<String, ArmPreset>();
 
   public ArmSubsystem(){
-    presets.put("hatchFloor", new ArmPreset(12, 2, -90));
+    presets.put("hatchFloor", new ArmPreset(12, 12, -90));
     presets.put("hatchShip", new ArmPreset(6, 18, 0));
     presets.put("hatchLoad", new ArmPreset(6, 18, 0));
     presets.put("hatchRock1", new ArmPreset(6, 18, 0));
     presets.put("hatchRock2", new ArmPreset(6, 38, 0));
     presets.put("hatchRock3", new ArmPreset(6, 58, 0));
-    presets.put("cargoFloor", new ArmPreset(12, 12, -90));
-    presets.put("cargoShip", new ArmPreset(12, 28, -90));
+    presets.put("cargoFloor", new ArmPreset(12, 22, -90));
+    presets.put("cargoShip", new ArmPreset(12, 38, -90));
     presets.put("cargoLoad", new ArmPreset(6, 28, 0));
     presets.put("cargoRock1", new ArmPreset(6, 28, 0));
     presets.put("cargoRock2", new ArmPreset(6, 48, 0));
@@ -62,11 +63,7 @@ public class ArmSubsystem extends Subsystem {
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
-  }
-
-  public double clamp(double min, double max, double value){
-    return Math.max(min, Math.min(max, value));
+    setDefaultCommand(new MonitorArmState());
   }
 
   public void configureElbow(){
@@ -92,9 +89,9 @@ public class ArmSubsystem extends Subsystem {
 
   public void setShoulderAngles(double theta1, double theta2){
     //theta1 is the direction the arm is facing relative to the robot.
-    theta1 = clamp(-Math.PI / 6, Math.PI / 6, theta1);
+    theta1 = Utils.clamp(-Math.PI / 6, Math.PI / 6, theta1);
     //theta2 is the arm's upwards angle from the ground
-    theta2 = clamp(Math.PI/3, 2*Math.PI/3, theta2);
+    theta2 = Utils.clamp(Math.PI/4, 3*Math.PI/4, theta2);
 
     //left arm attachment's position in robot coordinates
     double leftX = armAttachmentHeight*Math.cos(theta1)*Math.cos(theta2) + armAttachmentSeparation * -Math.sin(theta1);
@@ -114,30 +111,47 @@ public class ArmSubsystem extends Subsystem {
   }
 
   public void setElbowAngle(double theta){
-    theta = clamp(-3*Math.PI/4, 3*Math.PI/4, theta);
+    theta = Utils.clamp(-3*Math.PI/4, 3*Math.PI/4, theta);
 
     elbow.set(ControlMode.Position, theta * 4096 /*counts per rotation*/ * 1 / (Math.PI * 2) /*rotations per radian*/);
   }
 
   public void setWristAngle(double theta){
-    theta = clamp(-3*Math.PI/4, 3*Math.PI/4, theta);
+    theta = Utils.clamp(-3*Math.PI/4, 3*Math.PI/4, theta);
 
     wrist.set(ControlMode.Position, theta * 4096 /*counts per rotation*/ * 1 / (Math.PI * 2) /*rotations per radian*/);
   }
 
-  public void setWristCoordinates(double theta, double r, double y, double manipulatorAngle){
+  public void setWristCoordinates(double theta, double r, double y, double manipulatorAngle, boolean isFlipped){
     //r is the end of the arm's horizontal distance from its base.
-    r = clamp(0, 30, r);
+    r = Utils.clamp(0, 30, r);
     //theta is the direction the arm should face.
-    theta = clamp(-Math.PI / 6, Math.PI / 6, theta);
+    theta = Utils.clamp(-Math.PI / 6, Math.PI / 6, theta);
     //y is the height of the end of the arm above the ground.
-    y = clamp(0, 70, y);
+    y = Utils.clamp(0, 70, y);
 
-    double elbowAngle = Math.copySign(Math.acos((r*r + y*y - l1*l1 - l2*l2)/(2*l1*l2)), r);
+    //if the robot is currently flipped, reverse the direction of the arm and extend it to put the manipulator in (approximately) the same place relative to the edge of the robot.
+    //also flip over manipulator angle to face the back of the robot.
+    if(isFlipped){
+      r = -r - flipRadiusChange;
+      manipulatorAngle = 180 - manipulatorAngle;
+    }
+
+    //make sure the position isn't too far away to reach
+    if(Math.hypot(r, y) > l1 + l2){
+      r *= (l1+l2)/Math.hypot(r, y);
+      y *= (l1+l2)/Math.hypot(r, y);
+    }
+
+    double elbowAngle = Math.acos((r*r + y*y - l1*l1 - l2*l2)/(2*l1*l2));
+    //ensure the robot will reach up and out to the target position, not out and up.
+    if(isFlipped){
+      elbowAngle *= -1;
+    }
     double theta2 = Math.atan2(y, r) + Math.atan2(l2*Math.sin(elbowAngle), l1 + l2*Math.cos(elbowAngle));
     
     setElbowAngle(elbowAngle);
     setShoulderAngles(theta, theta2);
-    setWristAngle(manipulatorAngle - elbowAngle - theta2);//keep wrist horizontal
+    setWristAngle(Math.toRadians(manipulatorAngle) - elbowAngle - theta2);//turn manipulator to the correct direction relative to the ground.
   }
 }

@@ -19,14 +19,7 @@ public class Flip extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    switch(RobotState.getInstance().getFlipState()){
-      case Normal:
-        RobotState.getInstance().setFlip(RobotState.FlipState.Flipped);
-        break;
-      case Flipped:
-        RobotState.getInstance().setFlip(RobotState.FlipState.Normal);
-        break;
-    }
+    RobotState.getInstance().setFlip( !RobotState.getInstance().isFlipped() );
   }
 
   // Called repeatedly when this Command is scheduled to run

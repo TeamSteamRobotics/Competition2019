@@ -7,10 +7,11 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.RobotState;
-import frc.robot.RobotState.ArmPosition;
+import frc.robot.RobotState.Mode;
 import frc.robot.util.ArmPreset;
 
 public class MonitorArmState extends Command {
@@ -63,21 +64,22 @@ public class MonitorArmState extends Command {
 
     ArmPreset preset = Robot.armSubsystem.presets.get(presetName);
 
-    switch(robotState.getMode()){
-      case Cargo:
-        preset.manipulatorAngle -= 35;
-        break;
+    double[] offsets = new double[3];
+    offsets[0]=Robot.m_oi.armController.getX(Hand.kLeft);
+    if(preset.manipulatorAngle == -90){
+      offsets[1]=Robot.m_oi.armController.getY(Hand.kRight);
+      offsets[2]=Robot.m_oi.armController.getY(Hand.kLeft);
+    }else{
+      offsets[2]=Robot.m_oi.armController.getY(Hand.kRight);
+      offsets[1]=Robot.m_oi.armController.getY(Hand.kLeft);
     }
     
-    switch(robotState.getFlipState()){
-      case Flipped:
-        preset.r = -preset.r - Robot.armSubsystem.flipRadiusChange;
-        break;
+    double manipulatorAngle = preset.manipulatorAngle;
+    if(robotState.getMode() == Mode.Cargo){
+        manipulatorAngle -= 35;
     }
 
-    double[] offsets = robotState.getOffsets();
-
-    Robot.armSubsystem.setWristCoordinates(offsets[0], preset.r + offsets[2], preset.y + offsets[1], preset.manipulatorAngle);
+    Robot.armSubsystem.setWristCoordinates(offsets[0], preset.r + offsets[2], preset.y + offsets[1], manipulatorAngle, robotState.isFlipped());
   }
 
   // Make this return true when this Command no longer needs to run execute()

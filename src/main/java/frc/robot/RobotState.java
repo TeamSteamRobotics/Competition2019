@@ -14,11 +14,9 @@ public class RobotState {
         Loading, Floor, Ship, Rocket1, Rocket2, Rocket3
     }
 
-    public enum FlipState {
-        Normal, Flipped
-    }
+    private boolean isFlipped;
 
-    public double[] armPositionOffsets = new double[3];//{thetaOffset, yOffset, rOffset}
+    //public double[] armPositionOffsets = new double[3];//{thetaOffset, yOffset, rOffset}
 
     private static RobotState INSTANCE = null;
 
@@ -28,13 +26,11 @@ public class RobotState {
 
     private ArmPosition preset;
 
-    private FlipState flip;
-
     private RobotState() {
         mode = Mode.Hatch;
         suctionState = SuctionState.Release;
         preset = ArmPosition.Loading;
-        flip = FlipState.Normal;
+        isFlipped = false;
     }
 
     public static RobotState getInstance() {
@@ -65,19 +61,19 @@ public class RobotState {
         return preset;
     }
 
-    public void setFlip(FlipState flip){
-        this.flip = flip;
+    public void setFlip(boolean flip){
+        isFlipped = flip;
     }
-    public FlipState getFlipState(){
-        return flip;
+    public boolean isFlipped(){
+        return isFlipped;
     }
 
-    public void setOffsets(double tOffset, double yOffset, double rOffset){
+    /*public void setOffsets(double tOffset, double yOffset, double rOffset){
         armPositionOffsets[0] = tOffset;
         armPositionOffsets[1] = yOffset;
         armPositionOffsets[2] = rOffset;
     }
     public double[] getOffsets(){
         return armPositionOffsets;
-    }
+    }*/
 }
