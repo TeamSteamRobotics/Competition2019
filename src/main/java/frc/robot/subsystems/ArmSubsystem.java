@@ -63,8 +63,8 @@ public class ArmSubsystem extends Subsystem {
   }
 
   public void setShoulderLengths(double leftLength, double rightLength){
-    leftActuator.set(ControlMode.Position, leftLength);
-    rightActuator.set(ControlMode.Position, rightLength);
+    leftActuator.setInches(leftLength);
+    rightActuator.setInches(rightLength);
   }
 
   public void setShoulderAngles(double theta1, double theta2){

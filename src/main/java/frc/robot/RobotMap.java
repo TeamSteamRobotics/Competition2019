@@ -14,10 +14,8 @@ package frc.robot;
  * floating around.
  */
 public class RobotMap {
-    public static int leftDrive = 1,
-        leftFollower = 1,
-        rightDrive = 0,
-        rightFollower = 0,
+    public static int left = 0,
+        right = 1,
         leftActuator = 2,
         rightActuator = 3,
         elbow = 4,

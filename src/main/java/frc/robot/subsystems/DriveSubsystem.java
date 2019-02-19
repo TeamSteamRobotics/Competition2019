@@ -9,7 +9,10 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import frc.robot.util.*;
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.RobotMap;
@@ -28,14 +31,15 @@ public class DriveSubsystem extends Subsystem {
     public AHRS ahrs;
     public Telemetry telemetry;
     public DifferentialDrive diffDrive;
+    //public Servo servo = new Servo(0); .21, .4, .71
 
     private boolean isRamping = false;
 
     public void initDefaultCommand() { setDefaultCommand(new Drive()); }
 
     public DriveSubsystem() {
-        left = new Side("left");
-        right = new Side("right");
+        left = new Side(RobotMap.left);
+        right = new Side(RobotMap.right);
         left.reset();
         right.reset();
         ahrs = new AHRS(SPI.Port.kMXP);
@@ -43,7 +47,8 @@ public class DriveSubsystem extends Subsystem {
         odo = new Odometry(this);
         //odo.setPose(14, 0, 0);
         telemetry = new Telemetry();
-        diffDrive = new DifferentialDrive(left.master, right.master);
+        //servo.set
+        diffDrive = new DifferentialDrive(left, right);
     }
 
     public void startRamping() {
@@ -65,6 +70,8 @@ public class DriveSubsystem extends Subsystem {
     public boolean isRamping() { return isRamping; }
 
     public void drive(double xSpeed, double zRotation) {
+        //servo.setPosition((xSpeed + 1)/2.0);
+        //DriverStation.reportError("angle: "+servo.getPosition(), false);
         diffDrive.arcadeDrive(xSpeed, zRotation);
         /*double leftMotorOutput;
         double rightMotorOutput;
@@ -95,54 +102,46 @@ public class DriveSubsystem extends Subsystem {
         right.set(rightMotorOutput);*/
     }
 
-    public class Side {
+    public class Side extends WPI_TalonSRX{
 
-        final WPI_TalonSRX master;
         final WPI_VictorSPX follower;
 
-        Side(String side) {
-            if (side.equals("left")) {
-                master = new WPI_TalonSRX(RobotMap.leftDrive);
-                follower = new WPI_VictorSPX(RobotMap.leftFollower);
-            } else {
-                master = new WPI_TalonSRX(RobotMap.rightDrive);
-                follower = new WPI_VictorSPX(RobotMap.rightFollower);
-                //master.setInverted(true);
-                //follower.setInverted(true);
-            }
-            reset();
+        Side(int id) {
+            super(id);
+            follower = new WPI_VictorSPX(id);
+            //reset();
 
-            follower.follow(master);
+            follower.follow(this);
         }
 
         public void set(double percentOutput) {
             percentOutput = Math.max(-1, Math.min(1, percentOutput));
-            master.set(ControlMode.PercentOutput, percentOutput);
+            set(ControlMode.PercentOutput, percentOutput);
             //follower.set(ControlMode.PercentOutput, percentOutput);
         }
 
-        public void reset() { master.setSelectedSensorPosition(0); }
+        public void reset() { setSelectedSensorPosition(0); }
 
-        void startRamping() { master.configOpenloopRamp(0.5, 1000); }
+        void startRamping() { configOpenloopRamp(0.5, 1000); }
 
-        void stopRamping() { master.configOpenloopRamp(0, 1000); }
+        void stopRamping() { configOpenloopRamp(0, 1000); }
 
-        public int get() { return master.getSelectedSensorPosition(); }
+        public int getCount() { return getSelectedSensorPosition(); }
 
-        public double getDistance() { return ((double)get() / encoderResolution) * wheelCircumf; }
+        public double getDistance() { return ((double)getCount() / encoderResolution) * wheelCircumf; }
 
-        public double getRate() { return master.getSelectedSensorVelocity(); }
+        public double getRate() { return getSelectedSensorVelocity(); }
     }
 
     public class Telemetry {
         public double leftPct, leftAmps, leftEnc, rightPct, rightAmps, rightEnc;
 
         public void update() {
-            leftPct = left.master.getMotorOutputPercent();
+            leftPct = left.getMotorOutputPercent();
             //leftAmps = left.master.getOutputCurrent() + left.follower.getOutputCurrent();
             leftEnc = left.get();
 
-            rightPct = right.master.getMotorOutputPercent();
+            rightPct = right.getMotorOutputPercent();
             //rightAmps = right.master.getOutputCurrent() + right.follower.getOutputCurrent();
             rightEnc = right.get();
         }
