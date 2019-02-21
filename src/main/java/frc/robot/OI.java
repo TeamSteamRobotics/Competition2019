@@ -8,8 +8,16 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.buttons.POVButton;
+import frc.robot.commands.Flip;
 import frc.robot.commands.HitTarget;
+import frc.robot.commands.SetArmPosition;
+import frc.robot.commands.SetRobotMode;
+import frc.robot.commands.ToggleSuctionState;
+import frc.robot.util.TriggerButton;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -22,8 +30,23 @@ public class OI {
   // You create one by telling it which joystick it's on and which button
   // number it is.
   public Joystick stick = new Joystick(0);
-  // Joystick stick = new Joystick(port);
+  public XboxController armControl = new XboxController(1);
+  
   JoystickButton goToTarget = new JoystickButton(stick, 1);
+
+
+  public XboxController armController = new XboxController(1);
+
+  POVButton floorButton = new POVButton(armController, 270);
+  POVButton loadButton = new POVButton(armController, 90);
+  JoystickButton shipButton = new JoystickButton(armController, 0);
+  JoystickButton rocket1Button = new JoystickButton(armController, 2);
+  JoystickButton rocket2Button = new JoystickButton(armController, 3);
+  JoystickButton rocket3Button = new JoystickButton(armController, 1);
+  JoystickButton cargoMode = new JoystickButton(armController, 4);
+  JoystickButton hatchMode = new JoystickButton(armController, 5);
+  TriggerButton toggleSuction = new TriggerButton(armController, Hand.kRight);
+  TriggerButton flip = new TriggerButton(armController, Hand.kLeft);
 
   // There are a few additional built in buttons you can use. Additionally,
   // by subclassing Button you can create custom triggers and bind those to
@@ -46,5 +69,16 @@ public class OI {
   // button.whenReleased(new ExampleCommand());
   public OI () {
     goToTarget.whileHeld(new HitTarget());
+
+    floorButton.whenPressed(new SetArmPosition(RobotState.ArmPosition.Floor));
+    floorButton.whenPressed(new SetArmPosition(RobotState.ArmPosition.Loading));
+    shipButton.whenPressed(new SetArmPosition(RobotState.ArmPosition.Ship));
+    rocket1Button.whenPressed(new SetArmPosition(RobotState.ArmPosition.Rocket1));
+    rocket2Button.whenPressed(new SetArmPosition(RobotState.ArmPosition.Rocket2));
+    rocket3Button.whenPressed(new SetArmPosition(RobotState.ArmPosition.Rocket3));
+    cargoMode.whenPressed(new SetRobotMode(RobotState.Mode.Cargo));
+    hatchMode.whenPressed(new SetRobotMode(RobotState.Mode.Hatch));
+    toggleSuction.whenPressed(new ToggleSuctionState());
+    flip.whenPressed(new Flip());
   }
 }

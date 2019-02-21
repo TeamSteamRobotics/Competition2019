@@ -9,14 +9,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -28,6 +28,8 @@ import frc.robot.subsystems.DriveSubsystem;
 public class Robot extends TimedRobot {
   public static VisionSubsystem visionSubsystem = new VisionSubsystem();
   public static DriveSubsystem driveSubsystem = new DriveSubsystem();
+  public static ArmSubsystem armSubsystem = new ArmSubsystem();
+  public static SuctionSubsystem suctionSubsystem = new SuctionSubsystem();
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static OI m_oi;
 
@@ -121,6 +123,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    //driveSubsystem.left.follower.setSensorLength(SmartDashboard.getNumber("actuatorLength", defaultValue))
   }
 
   /**
@@ -129,8 +133,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
-    
-    //DriverStation.reportWarning(driveSubsystem.odo.getPose().toString(), false);
+    m_oi.armControl.setRumble(RumbleType.kLeftRumble, m_oi.armControl.getTriggerAxis(Hand.kLeft));
+    m_oi.armControl.setRumble(RumbleType.kRightRumble, m_oi.armControl.getTriggerAxis(Hand.kRight));
+    //DriverStation.reportWarning(driveSubsystem.ahrs.getAngle()+"", false);
     //visionSubsystem.setNumber("gyro", driveSubsystem.ahrs.getAngle());
     //DriverStation.reportWarning(visionSubsystem.getTVec()[2]+"", false);
   }
