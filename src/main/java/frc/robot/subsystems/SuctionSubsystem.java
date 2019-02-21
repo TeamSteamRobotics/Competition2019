@@ -16,7 +16,7 @@ import frc.robot.commands.MonitorSuctionState;
 
 public class SuctionSubsystem extends Subsystem {
 
-    private TalonSRX vacuum = new TalonSRX(RobotMap.vacuumTalon);
+    private TalonSRX vacuum = new TalonSRX(RobotMap.vacuum);
     private Servo diverter = new Servo(0);
 
     private final double kDiverterHatchAngle = 0000;
