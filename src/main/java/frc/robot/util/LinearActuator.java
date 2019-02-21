@@ -7,7 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class LinearActuator extends WPI_TalonSRX {
     public static final double minActuatorLength = 17.43;
-    public static final double maxActuatorLength = 26.43;
+    public static final double maxActuatorLength = 29.43;
 
     public LinearActuator(int port){
         super(port);
