@@ -41,6 +41,7 @@ public class ArmSubsystem extends Subsystem {
   TalonSRX elbow = new TalonSRX(RobotMap.elbow);
   TalonSRX wrist = new TalonSRX(RobotMap.wrist);
 
+  
   public double flipRadiusChange = 18.5;
 
   public HashMap<String, ArmPreset> presets = new HashMap<String, ArmPreset>();
@@ -59,7 +60,7 @@ public class ArmSubsystem extends Subsystem {
     presets.put("cargoRock2", new ArmPreset(6, 48, 0));
     presets.put("cargoRock3", new ArmPreset(6, 68, 0));
   }
-
+  
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.

@@ -8,40 +8,10 @@
 package frc.robot;
 
 public class RobotMap {
-    /**
-     * Our left drive master talon.
-     */
-    public static int leftDrive = 1,
-    /**
-     * Our left drive follower talon.
-     */
-    leftFollower = 2,
-    /**
-     * Our right drive talon.
-     */
-    rightDrive = 0,
-    /**
-     * Our right follower talon.
-     */
-    rightFollower = 3,
-    /**
-     * Our left actuator talon.
-     */
-    leftActuator = 2,
-    /**
-     * Our left actuator talon.
-     */
-    rightActuator = 3,
-    /**
-     * Our elbow talon.
-     */
-    elbow = 4,
-    /**
-     * Our wrist talon.
-     */
-    wrist = 5,
-    /**
-     * Our vacuum talon.
-     */
-    vacuumTalon = 6;
+    public static int left = 0,
+        right = 1,
+        leftActuator = 2,
+        rightActuator = 3,
+        elbow = 4,
+        wrist = 5;
 }
