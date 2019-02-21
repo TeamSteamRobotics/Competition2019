@@ -8,11 +8,5 @@
 package frc.robot;
 
 public class RobotMap {
-    public static int left = 0,
-        right = 1,
-        leftActuator = 2,
-        rightActuator = 3,
-        elbow = 4,
-        wrist = 5,
-        vacuum = 2;
+    public static int left = 0, right = 1, leftActuator = 2, rightActuator = 3, elbow = 4, wrist = 5, vacuum = 2;
 }

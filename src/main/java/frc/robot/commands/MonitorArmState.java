@@ -16,86 +16,83 @@ import frc.robot.util.ArmPreset;
 
 public class MonitorArmState extends Command {
 
-  RobotState robotState;
+    RobotState robotState;
 
-  public MonitorArmState() {
-    // Use requires() here to declare subsystem dependencies
-    requires(Robot.armSubsystem);
-  }
-
-  // Called just before this Command runs the first time
-  @Override
-  protected void initialize() {
-    robotState = RobotState.getInstance();
-  }
-
-  // Called repeatedly when this Command is scheduled to run
-  @Override
-  protected void execute() {
-    String presetName = "";
-    switch(robotState.getMode()){
-      case Hatch:
-        presetName += "hatch";
-        break;
-      case Cargo:
-        presetName += "cargo";
-        break;
-    }
-    switch(robotState.getPreset()){
-      case Floor:
-        presetName += "Floor";
-        break;
-      case Ship:
-        presetName += "Ship";
-        break;
-      case Loading:
-        presetName += "Load";
-        break;
-      case Rocket1:
-        presetName += "Rock1";
-        break;
-      case Rocket2:
-        presetName += "Rock2";
-        break;
-      case Rocket3:
-        presetName += "Rock3";
-        break;
+    public MonitorArmState() {
+        // Use requires() here to declare subsystem dependencies
+        requires(Robot.armSubsystem);
     }
 
-    ArmPreset preset = Robot.armSubsystem.presets.get(presetName);
-
-    double[] offsets = new double[3];
-    offsets[0]=Robot.m_oi.armController.getX(Hand.kLeft);
-    if(preset.manipulatorAngle == -90){
-      offsets[1]=Robot.m_oi.armController.getY(Hand.kRight);
-      offsets[2]=Robot.m_oi.armController.getY(Hand.kLeft);
-    }else{
-      offsets[2]=Robot.m_oi.armController.getY(Hand.kRight);
-      offsets[1]=Robot.m_oi.armController.getY(Hand.kLeft);
-    }
-    
-    double manipulatorAngle = preset.manipulatorAngle;
-    if(robotState.getMode() == Mode.Cargo){
-        manipulatorAngle -= 35;
+    // Called just before this Command runs the first time
+    @Override
+    protected void initialize() {
+        robotState = RobotState.getInstance();
     }
 
-    Robot.armSubsystem.setWristCoordinates(offsets[0], preset.r + offsets[2], preset.y + offsets[1], manipulatorAngle, robotState.isFlipped());
-  }
+    // Called repeatedly when this Command is scheduled to run
+    @Override
+    protected void execute() {
+        String presetName = "";
+        switch (robotState.getMode()) {
+        case Hatch:
+            presetName += "hatch";
+            break;
+        case Cargo:
+            presetName += "cargo";
+            break;
+        }
+        switch (robotState.getPreset()) {
+        case Floor:
+            presetName += "Floor";
+            break;
+        case Ship:
+            presetName += "Ship";
+            break;
+        case Loading:
+            presetName += "Load";
+            break;
+        case Rocket1:
+            presetName += "Rock1";
+            break;
+        case Rocket2:
+            presetName += "Rock2";
+            break;
+        case Rocket3:
+            presetName += "Rock3";
+            break;
+        }
 
-  // Make this return true when this Command no longer needs to run execute()
-  @Override
-  protected boolean isFinished() {
-    return false;
-  }
+        ArmPreset preset = Robot.armSubsystem.presets.get(presetName);
 
-  // Called once after isFinished returns true
-  @Override
-  protected void end() {
-  }
+        double[] offsets = new double[3];
+        offsets[0] = Robot.m_oi.armController.getX(Hand.kLeft);
+        if (preset.manipulatorAngle == -90) {
+            offsets[1] = Robot.m_oi.armController.getY(Hand.kRight);
+            offsets[2] = Robot.m_oi.armController.getY(Hand.kLeft);
+        } else {
+            offsets[2] = Robot.m_oi.armController.getY(Hand.kRight);
+            offsets[1] = Robot.m_oi.armController.getY(Hand.kLeft);
+        }
 
-  // Called when another command which requires one or more of the same
-  // subsystems is scheduled to run
-  @Override
-  protected void interrupted() {
-  }
+        double manipulatorAngle = preset.manipulatorAngle;
+        if (robotState.getMode() == Mode.Cargo) { manipulatorAngle -= 35; }
+
+        Robot.armSubsystem.setWristCoordinates(offsets[0], preset.r + offsets[2], preset.y + offsets[1],
+                                               manipulatorAngle, robotState.isFlipped());
+    }
+
+    // Make this return true when this Command no longer needs to run execute()
+    @Override
+    protected boolean isFinished() {
+        return false;
+    }
+
+    // Called once after isFinished returns true
+    @Override
+    protected void end() {}
+
+    // Called when another command which requires one or more of the same
+    // subsystems is scheduled to run
+    @Override
+    protected void interrupted() {}
 }

@@ -24,61 +24,60 @@ import frc.robot.util.TriggerButton;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-  //// CREATING BUTTONS
-  // One type of button is a joystick button which is any button on a
-  //// joystick.
-  // You create one by telling it which joystick it's on and which button
-  // number it is.
-  public Joystick stick = new Joystick(0);
-  public XboxController armControl = new XboxController(1);
-  
-  JoystickButton goToTarget = new JoystickButton(stick, 1);
+    //// CREATING BUTTONS
+    // One type of button is a joystick button which is any button on a
+    //// joystick.
+    // You create one by telling it which joystick it's on and which button
+    // number it is.
+    public Joystick stick = new Joystick(0);
+    public XboxController armControl = new XboxController(1);
 
+    JoystickButton goToTarget = new JoystickButton(stick, 1);
 
-  public XboxController armController = new XboxController(1);
+    public XboxController armController = new XboxController(1);
 
-  POVButton floorButton = new POVButton(armController, 270);
-  POVButton loadButton = new POVButton(armController, 90);
-  JoystickButton shipButton = new JoystickButton(armController, 0);
-  JoystickButton rocket1Button = new JoystickButton(armController, 2);
-  JoystickButton rocket2Button = new JoystickButton(armController, 3);
-  JoystickButton rocket3Button = new JoystickButton(armController, 1);
-  JoystickButton cargoMode = new JoystickButton(armController, 4);
-  JoystickButton hatchMode = new JoystickButton(armController, 5);
-  TriggerButton toggleSuction = new TriggerButton(armController, Hand.kRight);
-  TriggerButton flip = new TriggerButton(armController, Hand.kLeft);
+    POVButton floorButton = new POVButton(armController, 270);
+    POVButton loadButton = new POVButton(armController, 90);
+    JoystickButton shipButton = new JoystickButton(armController, 0);
+    JoystickButton rocket1Button = new JoystickButton(armController, 2);
+    JoystickButton rocket2Button = new JoystickButton(armController, 3);
+    JoystickButton rocket3Button = new JoystickButton(armController, 1);
+    JoystickButton cargoMode = new JoystickButton(armController, 4);
+    JoystickButton hatchMode = new JoystickButton(armController, 5);
+    TriggerButton toggleSuction = new TriggerButton(armController, Hand.kRight);
+    TriggerButton flip = new TriggerButton(armController, Hand.kLeft);
 
-  // There are a few additional built in buttons you can use. Additionally,
-  // by subclassing Button you can create custom triggers and bind those to
-  // commands the same as any other Button.
+    // There are a few additional built in buttons you can use. Additionally,
+    // by subclassing Button you can create custom triggers and bind those to
+    // commands the same as any other Button.
 
-  //// TRIGGERING COMMANDS WITH BUTTONS
-  // Once you have a button, it's trivial to bind it to a button in one of
-  // three ways:
+    //// TRIGGERING COMMANDS WITH BUTTONS
+    // Once you have a button, it's trivial to bind it to a button in one of
+    // three ways:
 
-  // Start the command when the button is pressed and let it run the command
-  // until it is finished as determined by it's isFinished method.
-  // button.whenPressed(new ExampleCommand());
+    // Start the command when the button is pressed and let it run the command
+    // until it is finished as determined by it's isFinished method.
+    // button.whenPressed(new ExampleCommand());
 
-  // Run the command while the button is being held down and interrupt it once
-  // the button is released.
-  // button.whileHeld(new ExampleCommand());
+    // Run the command while the button is being held down and interrupt it once
+    // the button is released.
+    // button.whileHeld(new ExampleCommand());
 
-  // Start the command when the button is released and let it run the command
-  // until it is finished as determined by it's isFinished method.
-  // button.whenReleased(new ExampleCommand());
-  public OI () {
-    goToTarget.whileHeld(new HitTarget());
+    // Start the command when the button is released and let it run the command
+    // until it is finished as determined by it's isFinished method.
+    // button.whenReleased(new ExampleCommand());
+    public OI() {
+        goToTarget.whileHeld(new HitTarget());
 
-    floorButton.whenPressed(new SetArmPosition(RobotState.ArmPosition.Floor));
-    floorButton.whenPressed(new SetArmPosition(RobotState.ArmPosition.Loading));
-    shipButton.whenPressed(new SetArmPosition(RobotState.ArmPosition.Ship));
-    rocket1Button.whenPressed(new SetArmPosition(RobotState.ArmPosition.Rocket1));
-    rocket2Button.whenPressed(new SetArmPosition(RobotState.ArmPosition.Rocket2));
-    rocket3Button.whenPressed(new SetArmPosition(RobotState.ArmPosition.Rocket3));
-    cargoMode.whenPressed(new SetRobotMode(RobotState.Mode.Cargo));
-    hatchMode.whenPressed(new SetRobotMode(RobotState.Mode.Hatch));
-    toggleSuction.whenPressed(new ToggleSuctionState());
-    flip.whenPressed(new Flip());
-  }
+        floorButton.whenPressed(new SetArmPosition(RobotState.ArmPosition.Floor));
+        floorButton.whenPressed(new SetArmPosition(RobotState.ArmPosition.Loading));
+        shipButton.whenPressed(new SetArmPosition(RobotState.ArmPosition.Ship));
+        rocket1Button.whenPressed(new SetArmPosition(RobotState.ArmPosition.Rocket1));
+        rocket2Button.whenPressed(new SetArmPosition(RobotState.ArmPosition.Rocket2));
+        rocket3Button.whenPressed(new SetArmPosition(RobotState.ArmPosition.Rocket3));
+        cargoMode.whenPressed(new SetRobotMode(RobotState.Mode.Cargo));
+        hatchMode.whenPressed(new SetRobotMode(RobotState.Mode.Hatch));
+        toggleSuction.whenPressed(new ToggleSuctionState());
+        flip.whenPressed(new Flip());
+    }
 }

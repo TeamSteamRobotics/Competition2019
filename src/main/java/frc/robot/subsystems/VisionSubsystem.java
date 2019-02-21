@@ -15,31 +15,23 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  * Add your docs here.
  */
 public class VisionSubsystem extends Subsystem {
-  NetworkTableInstance nt = NetworkTableInstance.getDefault();
-  NetworkTable table;
+    NetworkTableInstance nt = NetworkTableInstance.getDefault();
+    NetworkTable table;
 
-  public VisionSubsystem(){
-    super();
-    table = nt.getTable("testTable");
-  }
+    public VisionSubsystem() {
+        super();
+        table = nt.getTable("testTable");
+    }
 
-  @Override
-  public void initDefaultCommand() {
-    // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
-  }
+    @Override
+    public void initDefaultCommand() {
+        // Set the default command for a subsystem here.
+        // setDefaultCommand(new MySpecialCommand());
+    }
 
-  public double[] getTVec(){
-    return table.getEntry("tvec").getDoubleArray(new double[0]);
-  }
+    public double[] getTVec() { return table.getEntry("tvec").getDoubleArray(new double[0]); }
 
-  public void setNumber(String key, double value){
-    table.getEntry(key).setDouble(value);
-  }
+    public void setNumber(String key, double value) { table.getEntry(key).setDouble(value); }
 
-  public double getYaw(){
-    return table.getEntry("eulerAngles").getDoubleArray(new double[0])[1];
-    
-
-  }
+    public double getYaw() { return table.getEntry("eulerAngles").getDoubleArray(new double[0])[1]; }
 }
