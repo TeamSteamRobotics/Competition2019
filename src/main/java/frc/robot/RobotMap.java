@@ -13,5 +13,6 @@ public class RobotMap {
         leftActuator = 2,
         rightActuator = 3,
         elbow = 4,
-        wrist = 5;
+        wrist = 5,
+        vacuum = 2;
 }
