@@ -16,24 +16,20 @@ import edu.wpi.first.wpilibj.command.Command;
  * Add your docs here.
  */
 public class TriggerButton extends Trigger {
-  XboxController controller;
-  Hand hand;
+    XboxController controller;
+    Hand hand;
 
-  public TriggerButton(XboxController controller, Hand hand){
-    this.controller = controller;
-    this.hand = hand;
-  }
+    public TriggerButton(XboxController controller, Hand hand) {
+        this.controller = controller;
+        this.hand = hand;
+    }
 
-  @Override
-  public boolean get() {
-    return controller.getTriggerAxis(hand) > .5;
-  }
+    @Override
+    public boolean get() {
+        return controller.getTriggerAxis(hand) > .5;
+    }
 
-  public void whenPressed(Command command){
-    whenActive(command);
-  }
+    public void whenPressed(Command command) { whenActive(command); }
 
-  public void whileHeld(Command command){
-    whileActive(command);
-  }
+    public void whileHeld(Command command) { whileActive(command); }
 }

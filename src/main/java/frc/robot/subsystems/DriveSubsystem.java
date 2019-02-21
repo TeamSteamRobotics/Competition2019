@@ -26,8 +26,8 @@ public class DriveSubsystem extends Subsystem {
 
     public Side left;
     public Side right;
-    public double wheelCircumf = 6.0 * 3.141592653;//units = inches
-    public double encoderResolution = 4096.0;//4096 units per rotation
+    public double wheelCircumf = 6.0 * 3.141592653; //units = inches
+    public double encoderResolution = 4096.0;       //4096 units per rotation
     public Odometry odo;
     public AHRS ahrs;
     public Telemetry telemetry;
@@ -103,7 +103,7 @@ public class DriveSubsystem extends Subsystem {
         right.set(rightMotorOutput);*/
     }
 
-    public class Side extends WPI_TalonSRX{
+    public class Side extends WPI_TalonSRX {
 
         final WPI_VictorSPX follower;
 

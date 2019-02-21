@@ -2,17 +2,11 @@ package frc.robot;
 
 public class RobotState {
 
-    public enum Mode {
-        Hatch, Cargo
-    }
+    public enum Mode { Hatch, Cargo }
 
-    public enum SuctionState {
-        Hold, Release
-    }
+    public enum SuctionState { Hold, Release }
 
-    public enum ArmPosition {
-        Loading, Floor, Ship, Rocket1, Rocket2, Rocket3
-    }
+    public enum ArmPosition { Loading, Floor, Ship, Rocket1, Rocket2, Rocket3 }
 
     private boolean isFlipped;
 
@@ -34,39 +28,21 @@ public class RobotState {
     }
 
     public static RobotState getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new RobotState();
-        }
+        if (INSTANCE == null) { INSTANCE = new RobotState(); }
         return INSTANCE;
     }
 
-    public void setMode(Mode mode){
-        this.mode = mode;
-    }
-    public Mode getMode(){
-        return mode;
-    }
+    public void setMode(Mode mode) { this.mode = mode; }
+    public Mode getMode() { return mode; }
 
-    public void setSuctionState(SuctionState state) {
-        this.suctionState = state;
-    }
-    public SuctionState getSuctionState() {
-        return suctionState;
-    }
+    public void setSuctionState(SuctionState state) { this.suctionState = state; }
+    public SuctionState getSuctionState() { return suctionState; }
 
-    public void setPreset(ArmPosition preset){
-        this.preset = preset;
-    }
-    public ArmPosition getPreset(){
-        return preset;
-    }
+    public void setPreset(ArmPosition preset) { this.preset = preset; }
+    public ArmPosition getPreset() { return preset; }
 
-    public void setFlip(boolean flip){
-        isFlipped = flip;
-    }
-    public boolean isFlipped(){
-        return isFlipped;
-    }
+    public void setFlip(boolean flip) { isFlipped = flip; }
+    public boolean isFlipped() { return isFlipped; }
 
     /*public void setOffsets(double tOffset, double yOffset, double rOffset){
         armPositionOffsets[0] = tOffset;

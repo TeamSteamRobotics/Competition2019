@@ -16,7 +16,5 @@ public class Pose2D {
 
     public Pose2D copy() { return new Pose2D(x, y, theta); }
 
-    public String toString(){
-        return "x: "+x+" y: "+y+" theta: "+theta;
-    }
+    public String toString() { return "x: " + x + " y: " + y + " theta: " + theta; }
 }
