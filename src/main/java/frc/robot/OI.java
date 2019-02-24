@@ -38,12 +38,12 @@ public class OI {
 
     POVButton floorButton = new POVButton(armController, 270);
     POVButton loadButton = new POVButton(armController, 90);
-    JoystickButton shipButton = new JoystickButton(armController, 0);
-    JoystickButton rocket1Button = new JoystickButton(armController, 2);
-    JoystickButton rocket2Button = new JoystickButton(armController, 3);
-    JoystickButton rocket3Button = new JoystickButton(armController, 1);
-    JoystickButton cargoMode = new JoystickButton(armController, 4);
-    JoystickButton hatchMode = new JoystickButton(armController, 5);
+    JoystickButton shipButton = new JoystickButton(armController, 1);
+    JoystickButton rocket1Button = new JoystickButton(armController, 3);
+    JoystickButton rocket2Button = new JoystickButton(armController, 4);
+    JoystickButton rocket3Button = new JoystickButton(armController, 2);
+    JoystickButton cargoMode = new JoystickButton(armController, 5);
+    JoystickButton hatchMode = new JoystickButton(armController, 6);
     TriggerButton toggleSuction = new TriggerButton(armController, Hand.kRight);
     TriggerButton flip = new TriggerButton(armController, Hand.kLeft);
 

@@ -9,12 +9,17 @@ public class LinearActuator extends WPI_TalonSRX {
     public static final double minActuatorLength = 17.43;
     public static final double maxActuatorLength = 29.43;
 
-    public LinearActuator(int port) {
-        super(port);
+    public double offsetConstant;
+
+    public LinearActuator(int id, double offsetConstant) {
+        super(id);
+
+        this.offsetConstant = offsetConstant;
+
         configSelectedFeedbackSensor(FeedbackDevice.Analog);
 
-        configContinuousCurrentLimit(5);
-        configPeakCurrentLimit(5);
+        configContinuousCurrentLimit(2); // TODO increase
+        configPeakCurrentLimit(2);       // TODO increase
         enableCurrentLimit(true);
 
         selectProfileSlot(0, 0);
@@ -27,10 +32,14 @@ public class LinearActuator extends WPI_TalonSRX {
     }
     public void setInches(double inches) {
         inches = Utils.clamp(minActuatorLength, maxActuatorLength, inches);
-        set(ControlMode.Position, (inches - 17.162) / .0132);
+        set(ControlMode.Position, (inches - offsetConstant) / .0132);
     }
 
-    public double getLength() { return getSelectedSensorPosition() * .0132 + 17.162; }
+    public double getLength() { return getSelectedSensorPosition() * .0132 + offsetConstant; }
 
-    public void setSensorPosition(double inches) { setSelectedSensorPosition((int)((inches - 17.162) / .0132)); }
+    public double getError() { return getClosedLoopError() * .0132; }
+
+    public void setSensorPosition(double inches) {
+        setSelectedSensorPosition((int)((inches - offsetConstant) / .0132));
+    }
 }

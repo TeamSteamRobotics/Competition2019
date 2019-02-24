@@ -8,13 +8,17 @@
 package frc.robot.subsystems;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.RobotMap;
-import frc.robot.commands.MonitorArmState;
+import frc.robot.commands.ShuffleboardArmCommand;
 import frc.robot.util.ArmPreset;
 import frc.robot.util.LinearActuator;
 import frc.robot.util.Utils;
@@ -26,17 +30,17 @@ public class ArmSubsystem extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
     static double xOffset = 21;      //how far behind the arm the linear actuators are.
-    static double zOffset = 9.25;    //how far to the side of the arm either linear actuator is.
-    static double yOffset = 2;       //how far below the arm base the linear actuator base is.
+    static double zOffset = 8.75;    //how far to the side of the arm either linear actuator is.
+    static double yOffset = 2.125;   //how far below the arm base the linear actuator base is.
     static double pivotLength = 1.5; //distance between the actuators' y axis and z axis rotation.
     static double armAttachmentSeparation =
-        2.032; //how far the actuators' attachment points are from the center line of the arm.
-    static double armAttachmentHeight = 11; //how high along the arm the actuators are attached
-    static double l1 = 36;                  //length of bottom section of arm
-    static double l2 = 39;                  //length of top section of arm
+        2.5; //how far the actuators' attachment points are from the center line of the arm.
+    static double armAttachmentHeight = 10.75; //how high along the arm the actuators are attached
+    static double l1 = 36;                     //length of bottom section of arm
+    static double l2 = 39;                     //length of top section of arm
 
-    LinearActuator leftActuator = new LinearActuator(RobotMap.leftActuator);
-    LinearActuator rightActuator = new LinearActuator(RobotMap.rightActuator);
+    public LinearActuator leftActuator = new LinearActuator(RobotMap.leftActuator, 18.162 - 0.65);
+    public LinearActuator rightActuator = new LinearActuator(RobotMap.rightActuator, 18.162 - 0.15);
 
     TalonSRX elbow = new TalonSRX(RobotMap.elbow);
     TalonSRX wrist = new TalonSRX(RobotMap.wrist);
@@ -44,6 +48,11 @@ public class ArmSubsystem extends Subsystem {
     public double flipRadiusChange = 18.5;
 
     public HashMap<String, ArmPreset> presets = new HashMap<String, ArmPreset>();
+
+    NetworkTableEntry leftLengthNTEntry;
+    NetworkTableEntry rightLengthNTEntry;
+    NetworkTableEntry leftErrorNTEntry;
+    NetworkTableEntry rightErrorNTEntry;
 
     public ArmSubsystem() {
         presets.put("hatchFloor", new ArmPreset(12, 12, -90));
@@ -58,12 +67,33 @@ public class ArmSubsystem extends Subsystem {
         presets.put("cargoRock1", new ArmPreset(6, 28, 0));
         presets.put("cargoRock2", new ArmPreset(6, 48, 0));
         presets.put("cargoRock3", new ArmPreset(6, 68, 0));
+
+        leftLengthNTEntry = Shuffleboard.getTab("Arm Control")
+                                .add("Left Length", 23)
+                                .withWidget(BuiltInWidgets.kNumberBar)
+                                .withProperties(Map.of("min", 17.43, "max", 29.43))
+                                .getEntry();
+        rightLengthNTEntry = Shuffleboard.getTab("Arm Control")
+                                 .add("Right Length", 23)
+                                 .withWidget(BuiltInWidgets.kNumberBar)
+                                 .withProperties(Map.of("min", 17.43, "max", 29.43))
+                                 .getEntry();
+        leftErrorNTEntry = Shuffleboard.getTab("Arm Control")
+                               .add("Left Error", -0.1)
+                               .withWidget(BuiltInWidgets.kGraph)
+                               .withProperties(Map.of("min", -10, "max", 10))
+                               .getEntry();
+        rightErrorNTEntry = Shuffleboard.getTab("Arm Control")
+                                .add("Right Error", -0.1)
+                                .withWidget(BuiltInWidgets.kGraph)
+                                .withProperties(Map.of("min", -10, "max", 10))
+                                .getEntry();
     }
 
     @Override
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
-        setDefaultCommand(new MonitorArmState());
+        setDefaultCommand(new ShuffleboardArmCommand());
     }
 
     public void configureElbow() {
@@ -83,6 +113,12 @@ public class ArmSubsystem extends Subsystem {
     }
 
     public void setShoulderLengths(double leftLength, double rightLength) {
+        leftLengthNTEntry.setNumber(leftLength);
+        rightLengthNTEntry.setNumber(rightLength);
+
+        leftErrorNTEntry.setNumber(leftActuator.getError());
+        rightErrorNTEntry.setNumber(rightActuator.getError());
+
         leftActuator.setInches(leftLength);
         rightActuator.setInches(rightLength);
     }
@@ -98,14 +134,14 @@ public class ArmSubsystem extends Subsystem {
             armAttachmentHeight * Math.cos(theta1) * Math.cos(theta2) + armAttachmentSeparation * -Math.sin(theta1);
         double leftY = armAttachmentHeight * Math.sin(theta2);
         double leftZ =
-            armAttachmentHeight * Math.sin(theta1) * Math.cos(theta2) + armAttachmentSeparation * Math.cos(theta1);
+            armAttachmentHeight * Math.sin(theta1) * Math.cos(theta2) - armAttachmentSeparation * Math.cos(theta1);
 
         //right arm attachment's position in robot coordinates
         double rightX =
             armAttachmentHeight * Math.cos(theta1) * Math.cos(theta2) - armAttachmentSeparation * -Math.sin(theta1);
         double rightY = armAttachmentHeight * Math.sin(theta2);
         double rightZ =
-            armAttachmentHeight * Math.sin(theta1) * Math.cos(theta2) - armAttachmentSeparation * Math.cos(theta1);
+            armAttachmentHeight * Math.sin(theta1) * Math.cos(theta2) + armAttachmentSeparation * Math.cos(theta1);
 
         //finding the distance between the attachment points and the base of the corresponding linear actuator.
         double leftLength = Math.hypot(leftY + yOffset, Math.hypot(leftX + xOffset, leftZ + zOffset) - pivotLength);
