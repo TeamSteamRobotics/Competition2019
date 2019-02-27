@@ -50,6 +50,8 @@ public class DriveSubsystem extends Subsystem {
         telemetry = new Telemetry();
         //servo.set
         diffDrive = new DifferentialDrive(left, right);
+
+        diffDrive.setSafetyEnabled(false);
     }
 
     public void startRamping() {

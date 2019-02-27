@@ -40,13 +40,13 @@ public class HitTarget extends Command {
         if (tvec.length > 0 && tvec[2] != 0.0) {
             lastRelativeYaw = Robot.visionSubsystem.getYaw();
             lastVisionGyro = Robot.driveSubsystem.ahrs.getAngle();
-            xError = tvec[0] + 12.5;
+            xError = tvec[0];
             double zError = tvec[2];
             double xCorrectionAngle = Math.atan2(xError, zError) * 180.0 / Math.PI;
-            double targetYaw = xError * 1;
+            double targetYaw = xError * 1.5;
             //%DriverStation.reportWarning("targetYaw: "+targetYaw, false);
-            double steerCorrection = (targetYaw - lastRelativeYaw) * -1.0 / 90.0;
-            Robot.driveSubsystem.drive(-0.3, steerCorrection);
+            double steerCorrection = (targetYaw - lastRelativeYaw) * -1.0 / 45.0;
+            Robot.driveSubsystem.drive(-0.4, steerCorrection);
             hasSeenTarget = true;
         } else if (hasSeenTarget) { //odometry-ish stuff, but not really. Definitely should change/rework/delete this.
             double gyroChange =

@@ -16,6 +16,18 @@ deploy {
             // want to store a team number in this file.
             team = frc.getTeamNumber()
         }
+
+        target('raspi') {
+            directory = '/home/pi'
+
+            locations {
+                ssh {
+                    address = "raspberrypi.local"
+                    user = 'pi'
+                    password = 'raspberry'
+                }
+            }
+        }
     }
     artifacts {
         frcJavaArtifact('frcJava') {
@@ -30,6 +42,15 @@ deploy {
             // Deploy to RoboRIO target, into /home/lvuser/deploy
             targets << "roborio"
             directory = '/home/lvuser/deploy'
+        }
+
+        //deploy ZeroMQ vision bridge to Raspberry Pi
+        fileTreeArtifact('zeroMQPiDeploy') {
+            files = fileTree(dir: 'src/main/python/zmq_bridge')
+            targets << "raspi"
+            directory = "zmq_bridge"
+            predeploy << { execute 'sudo rm -rf *' }
+            postdeploy << { execute 'sudo systemctl restart zmq_bridge'}
         }
     }
 }
@@ -51,7 +72,7 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
     testCompile 'junit:junit:4.12'
-    //compile 'com.github.TeamSteamRobotics:Steampower:-SNAPSHOT'
+    compile 'org.zeromq:jeromq:0.5.0'
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')

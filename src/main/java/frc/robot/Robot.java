@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
@@ -42,6 +43,7 @@ public class Robot extends TimedRobot {
    */
     @Override
     public void robotInit() {
+        visionSubsystem.start();
         m_oi = new OI();
         m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
         // chooser.addOption("My Auto", new MyAutoCommand());
@@ -57,7 +59,10 @@ public class Robot extends TimedRobot {
    * LiveWindow and SmartDashboard integrated updating.
    */
     @Override
-    public void robotPeriodic() {}
+    public void robotPeriodic() {
+        SmartDashboard.putNumberArray("tvec", visionSubsystem.getTVec());
+        SmartDashboard.putNumber("yaw", visionSubsystem.getYaw());
+    }
 
     /**
    * This function is called once each time the robot enters Disabled mode.
