@@ -18,8 +18,8 @@ public class LinearActuator extends WPI_TalonSRX {
 
         configSelectedFeedbackSensor(FeedbackDevice.Analog);
 
-        configContinuousCurrentLimit(2); // TODO increase
-        configPeakCurrentLimit(2);       // TODO increase
+        configContinuousCurrentLimit(5); // TODO increase
+        configPeakCurrentLimit(5);       // TODO increase
         enableCurrentLimit(true);
 
         selectProfileSlot(0, 0);

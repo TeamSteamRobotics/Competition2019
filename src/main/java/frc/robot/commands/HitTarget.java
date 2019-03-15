@@ -23,7 +23,7 @@ public class HitTarget extends Command {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(Robot.driveSubsystem);
-        requires(Robot.visionSubsystem);
+        //requires(Robot.visionSubsystem);
     }
 
     // Called just before this Command runs the first time
@@ -36,7 +36,7 @@ public class HitTarget extends Command {
     @Override
     protected void execute() {
 
-        double[] tvec = Robot.visionSubsystem.getTVec();
+        /*double[] tvec = Robot.visionSubsystem.getTVec();
         if (tvec.length > 0 && tvec[2] != 0.0) {
             lastRelativeYaw = Robot.visionSubsystem.getYaw();
             lastVisionGyro = Robot.driveSubsystem.ahrs.getAngle();
@@ -65,7 +65,7 @@ public class HitTarget extends Command {
             DriverStation.reportError("xError: " + xError, false);
         }
         lastLeftEncoderDistance = Robot.driveSubsystem.left.getDistance();
-        lastRightEncoderDistance = Robot.driveSubsystem.right.getDistance();
+        lastRightEncoderDistance = Robot.driveSubsystem.right.getDistance();*/
     }
 
     // Make this return true when this Command no longer needs to run execute()

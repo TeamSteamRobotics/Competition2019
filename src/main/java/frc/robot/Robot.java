@@ -26,10 +26,10 @@ import frc.robot.subsystems.*;
  * project.
  */
 public class Robot extends TimedRobot {
-    public static VisionSubsystem visionSubsystem = new VisionSubsystem();
+    //public static VisionSubsystem visionSubsystem = new VisionSubsystem();
     public static DriveSubsystem driveSubsystem = new DriveSubsystem();
     public static ArmSubsystem armSubsystem = new ArmSubsystem();
-    public static SuctionSubsystem suctionSubsystem = new SuctionSubsystem();
+    //public static SuctionSubsystem suctionSubsystem = new SuctionSubsystem();
     public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
     public static OI m_oi;
 
@@ -127,8 +127,8 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-        m_oi.armControl.setRumble(RumbleType.kLeftRumble, m_oi.armControl.getTriggerAxis(Hand.kLeft));
-        m_oi.armControl.setRumble(RumbleType.kRightRumble, m_oi.armControl.getTriggerAxis(Hand.kRight));
+        //m_oi.armControl.setRumble(RumbleType.kLeftRumble, m_oi.armControl.getTriggerAxis(Hand.kLeft));
+        //m_oi.armControl.setRumble(RumbleType.kRightRumble, m_oi.armControl.getTriggerAxis(Hand.kRight));
         //DriverStation.reportWarning(driveSubsystem.ahrs.getAngle()+"", false);
         //visionSubsystem.setNumber("gyro", driveSubsystem.ahrs.getAngle());
         //DriverStation.reportWarning(visionSubsystem.getTVec()[2]+"", false);

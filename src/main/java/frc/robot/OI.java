@@ -70,7 +70,7 @@ public class OI {
         goToTarget.whileHeld(new HitTarget());
 
         floorButton.whenPressed(new SetArmPosition(RobotState.ArmPosition.Floor));
-        floorButton.whenPressed(new SetArmPosition(RobotState.ArmPosition.Loading));
+        loadButton.whenPressed(new SetArmPosition(RobotState.ArmPosition.Loading));
         shipButton.whenPressed(new SetArmPosition(RobotState.ArmPosition.Ship));
         rocket1Button.whenPressed(new SetArmPosition(RobotState.ArmPosition.Rocket1));
         rocket2Button.whenPressed(new SetArmPosition(RobotState.ArmPosition.Rocket2));
