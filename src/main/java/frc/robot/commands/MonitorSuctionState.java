@@ -8,12 +8,12 @@ public class MonitorSuctionState extends Command {
 
     RobotState robotState;
 
-    //public MonitorSuctionState() { requires(Robot.suctionSubsystem); }
+    public MonitorSuctionState() { requires(Robot.suctionSubsystem); }
 
     public void initialize() { robotState = RobotState.getInstance(); }
 
     public void execute() {
-        /*switch (robotState.getSuctionState()) {
+        switch (robotState.getSuctionState()) {
         case Release:
             Robot.suctionSubsystem.divertRelease();
             Robot.suctionSubsystem.setSuctionPower(0);
@@ -29,7 +29,7 @@ public class MonitorSuctionState extends Command {
             }
             Robot.suctionSubsystem.setSuctionPower(1);
             break;
-        }*/
+        }
     }
 
     @Override

@@ -44,7 +44,7 @@ public class ArmSubsystem extends Subsystem {
     public LinearActuator leftActuator = new LinearActuator(RobotMap.leftActuator, 17.62);
     public LinearActuator rightActuator = new LinearActuator(RobotMap.rightActuator, 17.406);
 
-    public Elbow elbow = new Elbow(RobotMap.elbow, 279);
+    public Elbow elbow = new Elbow(RobotMap.elbow, -402);
     TalonSRX wrist = new TalonSRX(RobotMap.wrist);
 
     public double flipRadiusChange = 18.5;
