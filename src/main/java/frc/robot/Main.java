@@ -18,8 +18,10 @@ import frc.robot.util.Utils;
 public final class Main {
 
     static double handleLength = 5.64; //distance between the end of the handle on the arm and the central pivot point.
-    static double actuator2PivotDistance = 25.172; //distance between the base of actuator 1 and the central pivot point.
-    static double thetaOffset = 1.192; //angle between the actuator 1 base, central pivot point, and the end of the handle when theta1 is zero. About 68 degrees.
+    static double actuator2PivotDistance =
+        25.172; //distance between the base of actuator 1 and the central pivot point.
+    static double thetaOffset =
+        1.192; //angle between the actuator 1 base, central pivot point, and the end of the handle when theta1 is zero. About 68 degrees.
     private Main() {}
 
     /**
@@ -28,7 +30,7 @@ public final class Main {
    * <p>If you change your main robot class, change the parameter type.
    */
     public static void main(String... args) {
-        /**/RobotBase.startRobot(Robot::new); /*/
+        /**/ RobotBase.startRobot(Robot::new); /*/
         //right arm attachment's position in robot space
         double[] robotAttachmentPoint = {-21, -2.125, 10.25}; //x, y, and z coordinates of the base of actuator 2 in robot space.
         double pivotLength = 1.5; //distance between the actuators' y axis and z axis rotation.

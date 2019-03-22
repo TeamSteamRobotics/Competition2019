@@ -14,9 +14,7 @@ public class DirectArmControl extends Command {
     public double y = 2.5;
     public double theta = 0;
 
-    public DirectArmControl() {
-        requires(Robot.armSubsystem);
-    }
+    public DirectArmControl() { requires(Robot.armSubsystem); }
 
     public void initialize() {
         r = 18;
@@ -26,11 +24,12 @@ public class DirectArmControl extends Command {
 
     public void execute() {
         double rSpeed = -Robot.m_oi.armControl.getY(Hand.kRight) * speed;
-        if(Math.abs(rSpeed) < .5){ rSpeed = 0; }
+        if (Math.abs(rSpeed) < .5) { rSpeed = 0; }
         double ySpeed = -Robot.m_oi.armControl.getY(Hand.kLeft) * speed;
-        if(Math.abs(ySpeed) < .5){ ySpeed = 0; }
-        double thetaSpeed = (Robot.m_oi.armControl.getX(Hand.kLeft) / r) * speed;//adjust angular speed based on radius to maintain max speed.
-        if((Math.abs(thetaSpeed) * r) < .5){ thetaSpeed = 0; }
+        if (Math.abs(ySpeed) < .5) { ySpeed = 0; }
+        double thetaSpeed = (Robot.m_oi.armControl.getX(Hand.kLeft) / r) *
+                            speed; //adjust angular speed based on radius to maintain max speed.
+        if ((Math.abs(thetaSpeed) * r) < .5) { thetaSpeed = 0; }
 
         r += rSpeed * dt;
         y += ySpeed * dt;
@@ -39,18 +38,11 @@ public class DirectArmControl extends Command {
         //System.out.println("r: "+r+"\ny: "+y+"\ntheta: "+theta);
         Robot.armSubsystem.setWristCoordinates(theta, r, y, 0, false);
         //Robot.armSubsystem.printAnglesForCoordinates(theta, r, y, 0, false);
-        
     }
 
-    public boolean isFinished() {
-        return false;
-    }
+    public boolean isFinished() { return false; }
 
-    public void end() {
+    public void end() {}
 
-    }
-
-    public void interrupted() {
-
-    }
+    public void interrupted() {}
 }
