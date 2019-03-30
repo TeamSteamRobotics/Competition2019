@@ -25,11 +25,11 @@ public class DirectArmControl extends Command {
     }
 
     public void execute() {
-        double rSpeed = -Robot.m_oi.armControl.getY(Hand.kRight) * speed;
+        double rSpeed = -Robot.m_oi.armController.getY(Hand.kRight) * speed;
         if(Math.abs(rSpeed) < .5){ rSpeed = 0; }
-        double ySpeed = -Robot.m_oi.armControl.getY(Hand.kLeft) * speed;
+        double ySpeed = -Robot.m_oi.armController.getY(Hand.kLeft) * speed;
         if(Math.abs(ySpeed) < .5){ ySpeed = 0; }
-        double thetaSpeed = (Robot.m_oi.armControl.getX(Hand.kLeft) / r) * speed;//adjust angular speed based on radius to maintain max speed.
+        double thetaSpeed = (Robot.m_oi.armController.getX(Hand.kLeft) / r) * speed;//adjust angular speed based on radius to maintain max speed.
         if((Math.abs(thetaSpeed) * r) < .5){ thetaSpeed = 0; }
 
         r += rSpeed * dt;
@@ -37,7 +37,7 @@ public class DirectArmControl extends Command {
         theta += thetaSpeed * dt;
 
         //System.out.println("r: "+r+"\ny: "+y+"\ntheta: "+theta);
-        Robot.armSubsystem.setWristCoordinates(theta, r, y, 0, false);
+        Robot.armSubsystem.setWristAngle(theta);
         //Robot.armSubsystem.printAnglesForCoordinates(theta, r, y, 0, false);
         
     }

@@ -17,11 +17,11 @@ import frc.robot.commands.MonitorSuctionState;
 public class SuctionSubsystem extends Subsystem {
 
     private TalonSRX vacuum = new TalonSRX(RobotMap.vacuum);
-    //private Servo diverter = new Servo(0);
+    private Servo diverter = new Servo(0);
 
-    private final double kDiverterHatchAngle = 0000;
-    private final double kDiverterBallAngle = 0000;
-    private final double kDiverterReleaseAngle = 0000;
+    private final double kDiverterHatchAngle = 31;
+    private final double kDiverterBallAngle = 140;
+    private final double kDiverterReleaseAngle = 78;
 
     @Override
     public void initDefaultCommand() {
@@ -30,7 +30,7 @@ public class SuctionSubsystem extends Subsystem {
 
     public void setSuctionPower(double power) { vacuum.set(ControlMode.PercentOutput, power); }
 
-public void setDiverterAngle(double angle) { /*diverter.setAngle(angle);*/ }
+public void setDiverterAngle(double angle) { diverter.setAngle(angle); }
 
     public void divertRelease() { setDiverterAngle(kDiverterReleaseAngle); }
 

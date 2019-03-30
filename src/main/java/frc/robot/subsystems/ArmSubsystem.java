@@ -24,6 +24,7 @@ import frc.robot.util.ArmPreset;
 import frc.robot.util.Elbow;
 import frc.robot.util.LinearActuator;
 import frc.robot.util.Utils;
+import frc.robot.util.Wrist;
 
 /**
  * Add your docs here.
@@ -44,8 +45,8 @@ public class ArmSubsystem extends Subsystem {
     public LinearActuator leftActuator = new LinearActuator(RobotMap.leftActuator, 17.62);
     public LinearActuator rightActuator = new LinearActuator(RobotMap.rightActuator, 17.406);
 
-    public Elbow elbow = new Elbow(RobotMap.elbow, -402);
-    TalonSRX wrist = new TalonSRX(RobotMap.wrist);
+    public Elbow elbow = new Elbow(RobotMap.elbow, -375);
+    public Wrist wrist = new Wrist(RobotMap.wrist, 3877);
 
     public double flipRadiusChange = 18.5;
 
@@ -71,8 +72,6 @@ public class ArmSubsystem extends Subsystem {
         presets.put("cargoRock1", new ArmPreset(6, 28, 0));
         presets.put("cargoRock2", new ArmPreset(6, 48, 0));
         presets.put("cargoRock3", new ArmPreset(6, 68, 0));
-
-        configureWrist();
 
         leftLengthNTEntry = Shuffleboard.getTab("Arm Control")
                                 .add("Left Length", 23)
@@ -104,14 +103,6 @@ public class ArmSubsystem extends Subsystem {
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         setDefaultCommand(new DirectArmControl());
-    }
-
-    public void configureWrist() {
-        wrist.selectProfileSlot(0, 0);
-
-        wrist.config_kP(0, .125);
-        wrist.config_kD(0, 0);
-        wrist.config_kI(0, 0);
     }
 
     public void setShoulderLengths(double leftLength, double rightLength) {
@@ -164,8 +155,7 @@ public class ArmSubsystem extends Subsystem {
     public void setWristAngle(double theta) {
         theta = Utils.clamp(-3 * Math.PI / 4, 3 * Math.PI / 4, theta);
 
-        wrist.set(ControlMode.Position,
-                  theta * 4096 /*counts per rotation*/ * 1 / (Math.PI * 2) /*rotations per radian*/);
+        wrist.setAngle(theta);
     }
 
     public void setWristCoordinates(double theta, double r, double y, double manipulatorAngle, boolean isFlipped) {
