@@ -18,8 +18,21 @@ import frc.robot.util.Utils;
 public final class Main {
 
     static double handleLength = 5.64; //distance between the end of the handle on the arm and the central pivot point.
-    static double actuator2PivotDistance = 25.172; //distance between the base of actuator 1 and the central pivot point.
-    static double thetaOffset = 1.192; //angle between the actuator 1 base, central pivot point, and the end of the handle when theta1 is zero. About 68 degrees.
+    static double actuator2PivotDistance =
+        25.172; //distance between the base of actuator 1 and the central pivot point.
+    static double thetaOffset =
+        1.192; //angle between the actuator 1 base, central pivot point, and the end of the handle when theta1 is zero. About 68 degrees.
+
+    static double[] robotAttachmentPoint = {-21, -2.125,
+                                            10.25}; //x, y, and z coordinates of the base of actuator 2 in robot space.
+    static double pivotLength = 1.5;                //distance between the actuators' y axis and z axis rotation.
+    static double[] armAttachmentPoint = {
+        11, 1.75, 0};         //x, y, z coordinates in arm space of where actuator 2 is attached to the arm.
+    static double l1 = 35.75; //length of bottom section of arm
+    static double l2 = 35.75; //length of top section of arm
+
+    public static double flipRadiusChange = 18.5;
+
     private Main() {}
 
     /**
@@ -28,7 +41,11 @@ public final class Main {
    * <p>If you change your main robot class, change the parameter type.
    */
     public static void main(String... args) {
-        /**/RobotBase.startRobot(Robot::new); /*/
+        /**/ 
+        //printAnglesForCoordinates(0, 19.5, 22.75, 0, true);
+        RobotBase.startRobot(Robot::new); 
+        
+        /*/
         //right arm attachment's position in robot space
         double[] robotAttachmentPoint = {-21, -2.125, 10.25}; //x, y, and z coordinates of the base of actuator 2 in robot space.
         double pivotLength = 1.5; //distance between the actuators' y axis and z axis rotation.
@@ -51,5 +68,35 @@ public final class Main {
             handleLength * handleLength + actuator2PivotDistance * actuator2PivotDistance - 2 * handleLength * actuator2PivotDistance * Math.cos(thetaOffset + theta1));
 
         System.out.println(leftLength);/**/
+    }
+
+    public static void printAnglesForCoordinates(double theta, double r, double y, double manipulatorAngle,
+                                          boolean isFlipped) {
+        r = Utils.clamp(0, 30, r);
+        //theta is the direction the arm should face.
+        theta = Utils.clamp(-Math.PI / 6, Math.PI / 6, theta);
+        //y is the height of the end of the arm above the ground.
+        y = Utils.clamp(0, 70, y);
+
+        //if the robot is currently flipped, reverse the direction of the arm and extend it to put the manipulator in (approximately) the same place relative to the edge of the robot.
+        //also flip over manipulator angle to face the back of the robot.
+        if (isFlipped) {
+            r = -r - flipRadiusChange;
+            manipulatorAngle = 180 - manipulatorAngle;
+        }
+
+        //make sure the position isn't too far away to reach
+        if (Math.hypot(r, y) > l1 + l2) {
+            r *= (l1 + l2) / Math.hypot(r, y);
+            y *= (l1 + l2) / Math.hypot(r, y);
+        }
+
+        double elbowAngle = -Math.acos((r * r + y * y - l1 * l1 - l2 * l2) / (2 * l1 * l2));
+        //ensure the robot will reach up and out to the target position, not out and up.
+        if (isFlipped) { elbowAngle *= -1; }
+        double theta2 = Math.atan2(y, r) - Math.atan2(l2 * Math.sin(elbowAngle), l1 + l2 * Math.cos(elbowAngle));
+
+        System.out.println("elbowAngle: " + Math.toDegrees(elbowAngle) + "\ntheta2: " + Math.toDegrees(theta2) +
+                           "\ntheta1: " + Math.toDegrees(theta));
     }
 }

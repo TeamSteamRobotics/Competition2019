@@ -30,7 +30,7 @@ public class SuctionSubsystem extends Subsystem {
 
     public void setSuctionPower(double power) { vacuum.set(ControlMode.PercentOutput, power); }
 
-public void setDiverterAngle(double angle) { diverter.setAngle(angle); }
+    public void setDiverterAngle(double angle) { diverter.setAngle(angle); }
 
     public void divertRelease() { setDiverterAngle(kDiverterReleaseAngle); }
 

@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
@@ -33,6 +34,8 @@ public class Robot extends TimedRobot {
     public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
     public static OI m_oi;
 
+    CameraServer server;
+
     Command m_autonomousCommand;
     SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -46,6 +49,10 @@ public class Robot extends TimedRobot {
         m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
         // chooser.addOption("My Auto", new MyAutoCommand());
         SmartDashboard.putData("Auto mode", m_chooser);
+
+        server = CameraServer.getInstance();
+
+        server.startAutomaticCapture();
     }
 
     /**

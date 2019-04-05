@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -33,20 +34,24 @@ public class ArmSubsystem extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
     static double handleLength = 5.64; //distance between the end of the handle on the arm and the central pivot point.
-    static double actuator2PivotDistance = 25.172; //distance between the base of actuator 1 and the central pivot point.
-    static double thetaOffset = 1.192; //angle between the actuator 1 base, central pivot point, and the end of the handle when theta1 is zero. About 68 degrees.
+    static double actuator2PivotDistance =
+        25.172; //distance between the base of actuator 1 and the central pivot point.
+    static double thetaOffset =
+        1.192; //angle between the actuator 1 base, central pivot point, and the end of the handle when theta1 is zero. About 68 degrees.
 
-    static double[] robotAttachmentPoint = {-21, -2.125, 10.25}; //x, y, and z coordinates of the base of actuator 2 in robot space.
-    static double pivotLength = 1.5; //distance between the actuators' y axis and z axis rotation.
-    static double[] armAttachmentPoint = {11, 1.75, 0}; //x, y, z coordinates in arm space of where actuator 2 is attached to the arm.
-    static double l1 = 35.75;                     //length of bottom section of arm
-    static double l2 = 35.75;                     //length of top section of arm
+    static double[] robotAttachmentPoint = {-21, -2.125,
+                                            10.25}; //x, y, and z coordinates of the base of actuator 2 in robot space.
+    static double pivotLength = 1.5;                //distance between the actuators' y axis and z axis rotation.
+    static double[] armAttachmentPoint = {
+        11, 1.75, 0};         //x, y, z coordinates in arm space of where actuator 2 is attached to the arm.
+    static double l1 = 35.75; //length of bottom section of arm
+    static double l2 = 35.75; //length of top section of arm
 
-    public LinearActuator leftActuator = new LinearActuator(RobotMap.leftActuator, 17.62);
-    public LinearActuator rightActuator = new LinearActuator(RobotMap.rightActuator, 17.406);
+    public LinearActuator leftActuator = new LinearActuator(RobotMap.leftActuator, 17.7224);
+    public LinearActuator rightActuator = new LinearActuator(RobotMap.rightActuator, 31.044);
 
-    public Elbow elbow = new Elbow(RobotMap.elbow, -375);
-    public Wrist wrist = new Wrist(RobotMap.wrist, 3877);
+    public Elbow elbow = new Elbow(RobotMap.elbow, -703);
+    public Wrist wrist = new Wrist(RobotMap.wrist, 8094);
 
     public double flipRadiusChange = 18.5;
 
@@ -93,10 +98,8 @@ public class ArmSubsystem extends Subsystem {
                                 .withWidget(BuiltInWidgets.kGraph)
                                 .withProperties(Map.of("min", -10, "max", 10))
                                 .getEntry();
-        elbowAngleEntry = Shuffleboard.getTab("Arm Control")
-                                .add("Elbow Angle", -2.6866).getEntry();
-        elbowErrorEntry = Shuffleboard.getTab("Arm Control")
-                                .add("Elbow Error", 0).getEntry();
+        elbowAngleEntry = Shuffleboard.getTab("Arm Control").add("Elbow Angle", -2.6866).getEntry();
+        elbowErrorEntry = Shuffleboard.getTab("Arm Control").add("Elbow Error", 0).getEntry();
     }
 
     @Override
@@ -116,27 +119,63 @@ public class ArmSubsystem extends Subsystem {
         rightActuator.setInches(rightLength);
     }
 
+    public double[] getShoulderLengths() {
+        return new double[]{leftActuator.getLength(), rightActuator.getLength()};
+    }
+
     public void setShoulderAngles(double theta1, double theta2) {
         //theta1 is the direction the arm is facing relative to the robot.
         theta1 = Utils.clamp(-Math.PI / 6, Math.PI / 6, theta1);
         //theta2 is the arm's upwards angle from the ground
         theta2 = Utils.clamp(Math.PI / 4, 3 * Math.PI / 4, theta2);
 
-        double leftLength = Math.sqrt(
-            handleLength * handleLength + actuator2PivotDistance * actuator2PivotDistance - 2 * handleLength * actuator2PivotDistance * Math.cos(thetaOffset + theta1)) - pivotLength;
+        double leftLength = Math.sqrt(handleLength * handleLength + actuator2PivotDistance * actuator2PivotDistance -
+                                      2 * handleLength * actuator2PivotDistance * Math.cos(thetaOffset + theta1)) -
+                            pivotLength;
 
         //right arm attachment's position in robot space
-        double rightX =
-            armAttachmentPoint[0] * Math.cos(theta1) * Math.cos(theta2) + armAttachmentPoint[1] * -Math.cos(theta1) * Math.sin(theta2);
-        double rightY = 
-            armAttachmentPoint[0] * Math.sin(theta2) + armAttachmentPoint[1] * Math.cos(theta2);
-        double rightZ =
-            armAttachmentPoint[0] * Math.sin(theta1) * Math.cos(theta2) + armAttachmentPoint[1] * -Math.sin(theta1) * Math.sin(theta2);
+        double rightX = armAttachmentPoint[0] * Math.cos(theta1) * Math.cos(theta2) +
+                        armAttachmentPoint[1] * -Math.cos(theta1) * Math.sin(theta2);
+        double rightY = armAttachmentPoint[0] * Math.sin(theta2) + armAttachmentPoint[1] * Math.cos(theta2);
+        double rightZ = armAttachmentPoint[0] * Math.sin(theta1) * Math.cos(theta2) +
+                        armAttachmentPoint[1] * -Math.sin(theta1) * Math.sin(theta2);
 
         //finding the distance between the attachment point and the base of the right linear actuator.
-        double rightLength = Math.hypot(rightY - robotAttachmentPoint[1], Math.hypot(rightX - robotAttachmentPoint[0], rightZ - robotAttachmentPoint[2]) - pivotLength);
+        double rightLength =
+            Math.hypot(rightY - robotAttachmentPoint[1],
+                       Math.hypot(rightX - robotAttachmentPoint[0], rightZ - robotAttachmentPoint[2]) - pivotLength);
 
         setShoulderLengths(leftLength, rightLength);
+    }
+
+    public double[] getShoulderAngles() {
+        double theta_1 = Math.acos( (handleLength * handleLength + actuator2PivotDistance * actuator2PivotDistance) / (2 * handleLength * actuator2PivotDistance) ) + thetaOffset;
+
+        double d = -robotAttachmentPoint[0] * Math.sin(theta_1) + robotAttachmentPoint[2] * Math.cos(theta_1);
+        double y_i = robotAttachmentPoint[1];
+        double x_i = robotAttachmentPoint[0] * Math.cos(theta_1) + robotAttachmentPoint[2] * Math.sin(theta_1);
+        double d_c = Math.sqrt(x_i * x_i + y_i * y_i);
+        double r_l = Math.sqrt( Math.pow(getShoulderLengths()[1], 2) - d * d);
+        double r = Math.hypot( armAttachmentPoint[0], Math.hypot( armAttachmentPoint[1], armAttachmentPoint[2] ) );
+        double a = ( r * r - r_l * r_l + d_c * d_c ) / ( 2 * d_c );
+        double h = Math.sqrt( r * r - a * a );
+        double x_2 = ( a * x_i ) / d;
+        double y_2 = ( a * y_i ) / d;
+
+        double x;
+        double y;
+
+        if (y_2 - ((h * x_i) / d_c) > y_2 + ((h * x_i) / d_c)) {
+            x = x_2 + ((h * y_i) / d_c);
+            y = y_2 - ((h * x_i) / d_c);
+        } else {
+            x = x_2 - ((h * y_i) / d_c);
+            y = y_2 + ((h * x_i) / d_c);
+        }
+
+        double theta_2 = Math.atan2(y, x);
+
+        return new double[]{theta_1, theta_2};
     }
 
     public void setElbowAngle(double theta) {
@@ -153,7 +192,7 @@ public class ArmSubsystem extends Subsystem {
     }
 
     public void setWristAngle(double theta) {
-        theta = Utils.clamp(-3 * Math.PI / 4, 3 * Math.PI / 4, theta);
+        theta = Utils.clamp(-2*Math.PI / 3, Math.PI / 3, theta);
 
         wrist.setAngle(theta);
     }
@@ -185,12 +224,14 @@ public class ArmSubsystem extends Subsystem {
         double theta2 = Math.atan2(y, r) - Math.atan2(l2 * Math.sin(elbowAngle), l1 + l2 * Math.cos(elbowAngle));
 
         setElbowAngle(elbowAngle);
+        //DriverStation.reportError(elbowAngle + "",false);
         setShoulderAngles(theta, theta2);
-        //setWristAngle(Math.toRadians(manipulatorAngle) - elbowAngle -
-        //              theta2); //turn manipulator to the correct direction relative to the ground.
+        setWristAngle(Math.toRadians(manipulatorAngle) - elbow.getAngle() -
+                      theta2); //turn manipulator to the correct direction relative to the ground.
     }
 
-    public void printAnglesForCoordinates(double theta, double r, double y, double manipulatorAngle, boolean isFlipped){
+    public void printAnglesForCoordinates(double theta, double r, double y, double manipulatorAngle,
+                                          boolean isFlipped) {
         r = Utils.clamp(0, 30, r);
         //theta is the direction the arm should face.
         theta = Utils.clamp(-Math.PI / 6, Math.PI / 6, theta);
@@ -215,6 +256,7 @@ public class ArmSubsystem extends Subsystem {
         if (isFlipped) { elbowAngle *= -1; }
         double theta2 = Math.atan2(y, r) - Math.atan2(l2 * Math.sin(elbowAngle), l1 + l2 * Math.cos(elbowAngle));
 
-        System.out.println("elbowAngle: "+Math.toDegrees(elbowAngle)+"\ntheta2: "+Math.toDegrees(theta2)+"\ntheta1: "+Math.toDegrees(theta));
+        DriverStation.reportWarning("elbowAngle: " + Math.toDegrees(elbowAngle) + "\ntheta2: " + Math.toDegrees(theta2) +
+                           "\ntheta1: " + Math.toDegrees(theta), false);
     }
 }
