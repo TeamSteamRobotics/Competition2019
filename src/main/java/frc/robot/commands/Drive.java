@@ -23,7 +23,7 @@ public class Drive extends Command {
     // Called repeatedly when this Command is scheduled to run
     @Override
     protected void execute() {
-        Robot.driveSubsystem.drive(-Robot.m_oi.stick.getY(), Robot.m_oi.stick.getX());
+        Robot.driveSubsystem.drive(Robot.m_oi.stick.getY(), Robot.m_oi.stick.getX());
     }
 
     // Make this return true when this Command no longer needs to run execute()

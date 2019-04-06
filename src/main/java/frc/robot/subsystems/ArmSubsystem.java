@@ -45,13 +45,13 @@ public class ArmSubsystem extends Subsystem {
     static double[] armAttachmentPoint = {
         11, 1.75, 0};         //x, y, z coordinates in arm space of where actuator 2 is attached to the arm.
     static double l1 = 35.75; //length of bottom section of arm
-    static double l2 = 35.75; //length of top section of arm
+    static double l2 = 33.75; //length of top section of arm
 
     public LinearActuator leftActuator = new LinearActuator(RobotMap.leftActuator, 17.7224);
-    public LinearActuator rightActuator = new LinearActuator(RobotMap.rightActuator, 31.044);
+    public LinearActuator rightActuator = new LinearActuator(RobotMap.rightActuator, 17.1756);
 
-    public Elbow elbow = new Elbow(RobotMap.elbow, -703);
-    public Wrist wrist = new Wrist(RobotMap.wrist, 8094);
+    public Elbow elbow = new Elbow(RobotMap.elbow);
+    public Wrist wrist = new Wrist(RobotMap.wrist);
 
     public double flipRadiusChange = 18.5;
 

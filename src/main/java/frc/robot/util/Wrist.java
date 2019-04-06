@@ -4,17 +4,17 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class Wrist extends TalonSRX {
-    private final double zeroUnits; //encoder value in native units when angle is 0.
     private double unitsPerRadian = -1620.197;
+    private double startingAngle = 0;
 
-    public Wrist(int id, double zeroAngleUnits){
+    public Wrist(int id){
         super(id);
-
-        zeroUnits = zeroAngleUnits;
 
         setSensorPhase(false);
 
         selectProfileSlot(0, 0);
+
+        setSelectedSensorPosition((int)(startingAngle * unitsPerRadian));
 
         config_kP(0, .75);
         config_kD(0, .125);
@@ -25,11 +25,11 @@ public class Wrist extends TalonSRX {
     }
 
     public void setAngle(double radians){
-        set(ControlMode.Position, (radians * unitsPerRadian) + zeroUnits);
+        set(ControlMode.Position, radians * unitsPerRadian);
     }
 
     public double getAngle(){
-        return (getSelectedSensorPosition() - zeroUnits) / unitsPerRadian;
+        return getSelectedSensorPosition() / unitsPerRadian;
     }
 
     public double getError(){

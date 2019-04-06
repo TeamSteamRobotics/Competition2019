@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.Unfold;
 import frc.robot.subsystems.*;
 
 /**
@@ -64,7 +65,9 @@ public class Robot extends TimedRobot {
    * LiveWindow and SmartDashboard integrated updating.
    */
     @Override
-    public void robotPeriodic() {}
+    public void robotPeriodic() {
+        SmartDashboard.putNumber("elbow position", Math.toDegrees(armSubsystem.elbow.getAngle()));
+    }
 
     /**
    * This function is called once each time the robot enters Disabled mode.
@@ -94,10 +97,11 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         m_autonomousCommand = m_chooser.getSelected();
 
+        //                                                                 m_autonomousCommand = new Unfold();
         /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
      * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-     * = new MyAutoCommand(); break; case "Default Auto": default:
+     * = new MyAutoComman                                                                                                     d(); break; case "Default Auto": default:
      * autonomousCommand = new ExampleCommand(); break; }
      */
 

@@ -44,7 +44,7 @@ public class OI {
     JoystickButton cargoMode = new JoystickButton(armController, 5);
     JoystickButton hatchMode = new JoystickButton(armController, 6);
     TriggerButton toggleSuction = new TriggerButton(armController, Hand.kRight);
-    TriggerButton flip = new TriggerButton(armController, Hand.kLeft);
+    //TriggerButton flip = new TriggerButton(armController, Hand.kLeft);
 
     // There are a few additional built in buttons you can use. Additionally,
     // by subclassing Button you can create custom triggers and bind those to
@@ -77,6 +77,6 @@ public class OI {
         cargoMode.whenPressed(new SetRobotMode(RobotState.Mode.Cargo));
         hatchMode.whenPressed(new SetRobotMode(RobotState.Mode.Hatch));
         toggleSuction.whenPressed(new ToggleSuctionState());
-        flip.whenPressed(new Flip());
+        //flip.whenPressed(new Flip());
     }
 }

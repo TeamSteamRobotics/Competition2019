@@ -20,7 +20,7 @@ public class Unfold extends CommandGroup {
     // these will run in order.
 
     addSequential(new SetShoulder(Math.toRadians(5), Math.PI/3));
-    addSequential(new FlipWrist());
+    //addSequential(new FlipWrist());
 
     // To run multiple commands at the same time,
     // use addParallel()
